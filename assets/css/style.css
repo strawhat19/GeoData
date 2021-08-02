@@ -1,0 +1,18 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --violet: #222639;
+    --softViolet: #bb99ff;
+    --pink: #ee99ff;
+    --blue: #50C0E2;
+    --green: #9FC490;
+}
+
+body {
+    background: var(--violet);
+    color: white;
+}
