@@ -39,7 +39,6 @@
             <h4>Weather Dashboard</h4>
             <h1 class="cityName">City Name, State</h1>
             <div class="statContainer">
-              <div class="map"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106135.1203099034!2d-84.49064376828504!3d33.76783582520046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f5045d6993098d%3A0x66fede2f990b630b!2sAtlanta%2C%20GA!5e0!3m2!1sen!2sus!4v1627983357185!5m2!1sen!2sus" width="73%" height="80px" style="border:0;" allowfullscreen="" loading="lazy"></iframe></div>
               <div>Temperature: <span class="temperature"></span></div>
               <div>Humidity: <span class="humidity"></span></div>
               <div>Condition: 
@@ -51,6 +50,7 @@
               <div>UV Index: <span class="UV-Index"></span></div>
             </div>
           </div>
+          <div id="map"></div>
         </div>
 
 
@@ -148,6 +148,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       <!-- Moment.js -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+      <!-- Google Maps API -->
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS9k5V2rEyMVVqtgHpon-Ro8hRQAatBx8&callback=initmap"></script>
       <!-- Custom Script -->
       <script src="./assets/js/script.js"></script>
     <!-- End Scripts -->
