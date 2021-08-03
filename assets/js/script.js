@@ -1,6 +1,7 @@
 // Weather App
 console.log('Weather App!');
 
+// Initializing First Map Screen
 function initmap(){
     var options = {
         zoom: 1,
@@ -8,15 +9,17 @@ function initmap(){
     }
     
     var map = new google.maps.Map(document.getElementById('map'),options);
-}
+} // Invoking Create Map Function using Google Maps API
 initmap();
 
+// Declaring Variables
 var apiKey = 'ce5300e7acaa327ad655b8a21d5130d8';
 var cityName = '';
 var searchInput = $('#search');
 var searchButton = $('.searchButton');
 var citiesList = $('.locationList');
 var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
+cities.splice(11);
 var cityNameText = $('.cityName');
 var cardContainer = $('.cardContainer');
 var temperature = $('.temperature');
@@ -32,33 +35,34 @@ var cardDayText = $('.dayText');
 var cardTemperature = $('.cardTemperature');
 var cardWind = $('cardWind');
 var cardHumidity = $('.cardHumidity');
+var coordinates = $('.coords');
 
 // When User Clicks Search Button
 searchButton.on('click',function(event) {
     event.preventDefault();
     var searchInputValue = searchInput.val();
     cities.push(searchInputValue);
-    cities.splice(13);
-    // if (cities.length === 13) {
-    //     var oldCity = cities.length-1;
-    //     cities[oldCity].remove();
-    // }
+    cities.splice(11);
     localStorage.setItem('Cities History', JSON.stringify(cities));
     var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInputValue}&appid=${apiKey}`;
-    // Fetch
+    // Fetch first dataset
     fetch(requestURL)
     .then(function(response) {
         return response.json();
     }).then(function(data) {
         console.log(data);
+        // Converting Temperature from Kelvin to Fahrenheit
         var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
         cityNameText.html(data.name + ', ' + data.sys.country);
         temperature.html(fahrenheit + '° F');
         humidity.html(data.main.humidity);
         wind.html(data.wind.speed);
+        coordinates.html(Math.floor(data.coord.lat + ', ' + data.coord.lon));
 
+        // Initializing Coords
         var lat = data.coord.lat;
         var lon = data.coord.lon;
+        // Reinitializing new map
         function initmap(){
             var options = {
                 zoom: 9,
@@ -66,8 +70,10 @@ searchButton.on('click',function(event) {
             }
             
             var map = new google.maps.Map(document.getElementById('map'),options);
-        }
+        } // Reinvoking Map with new Coords
         initmap();
+
+        // Fetching 2nd dataset with new Lat Lon and OneCall API
         var latlonLink = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`;
         fetch(latlonLink).then(function(response) {
             return response.json();
@@ -79,6 +85,7 @@ searchButton.on('click',function(event) {
             cityNameText.append(currentTimeEl);
             cardContainer.html('');
             conditionText.html(data.daily[0].weather[0].main);
+            // 5 day forecast
             for (var i = 1; i < 6; i++) {
                 var fullDates = moment.unix(data.daily[i].dt).format('MMMM Do');
                 var day = moment.unix(data.daily[i].dt).format('dddd');
@@ -88,6 +95,7 @@ searchButton.on('click',function(event) {
                 condition.attr('src',mainIconLink);
                 var icon = data.daily[i].weather[0].icon;
                 var iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+                // Creating Forecast Cards
                 var foreCastCards = $(`
                 <div class="card">
                   <div class="dateIcon"><h4 class="date">${fullDates}</h4><img class="icon" src="${iconLink}"></div>
@@ -117,11 +125,12 @@ cities.forEach((city,index) => {
     citiesList.append(locationButton);
 })
 
+// When user clicks on Location Buttons
 var locationButtons = $('.locationButton');
 locationButtons.on('click',function(event) {
     var location = $(event.target).html();
     var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`;
-    // Repeating Fetch
+    // Repeating Fetch of 1st dataset
     fetch(requestURL)
     .then(function(response) {
         return response.json();
@@ -132,9 +141,12 @@ locationButtons.on('click',function(event) {
         temperature.html(fahrenheit + '° F');
         humidity.html(data.main.humidity);
         wind.html(data.wind.speed);
+        coordinates.html(Math.floor(data.coord.lat) + ', ' + Math.floor(data.coord.lon));
 
+        // Initializing Lat Lons
         var lat = data.coord.lat;
         var lon = data.coord.lon;
+        // Reinitializing map
         function initmap(){
             var options = {
                 zoom: 9,
@@ -142,7 +154,7 @@ locationButtons.on('click',function(event) {
             }
             
             var map = new google.maps.Map(document.getElementById('map'),options);
-        }
+        } // Reinvoking map with new coords
         initmap();
         var latlonLink = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`;
         fetch(latlonLink).then(function(response) {
@@ -155,6 +167,7 @@ locationButtons.on('click',function(event) {
             cityNameText.append(currentTimeEl);
             cardContainer.html('');
             conditionText.html(data.daily[0].weather[0].main);
+            // 5 day forecast
             for (var i = 1; i < 6; i++) {
                 var fullDates = moment.unix(data.daily[i].dt).format('MMMM Do');
                 var day = moment.unix(data.daily[i].dt).format('dddd');
@@ -164,6 +177,7 @@ locationButtons.on('click',function(event) {
                 condition.attr('src',mainIconLink);
                 var icon = data.daily[i].weather[0].icon;
                 var iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+                // Creating forecast cards
                 var foreCastCards = $(`
                 <div class="card">
                   <div class="dateIcon"><h4 class="date">${fullDates}</h4><img class="icon" src="${iconLink}"></div>
