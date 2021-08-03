@@ -56,8 +56,7 @@ form {
     grid-gap: .7em;
 }
 
-ul {
-    list-style-type: none;
+.locationList {
     display: flex;
     flex-direction: column;
     grid-gap: .7em;
@@ -71,6 +70,7 @@ input {
     border-radius: 25px;
     padding: 0.5em 1em;
     color: #fff;
+    text-transform: capitalize;
 }
 
 button {
@@ -94,6 +94,7 @@ button:hover {
 .locationButton {
     background: var(--pink);
     border-color: var(--pink);
+    text-transform: capitalize;
 }
 
 :focus {
@@ -120,7 +121,7 @@ article {
 }
 
 .dashboard {
-    background: linear-gradient(90deg,var(--blue) 70%,transparent),url(./images/Sunrise.svg);
+    background: linear-gradient(90deg,var(--blue) 35%,transparent 45%),url(./images/Sunrise.svg);
     background-size: cover;
     background-position: 7% 50%;
     border: 2px solid var(--blue);
