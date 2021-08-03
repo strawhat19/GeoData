@@ -39,8 +39,14 @@
             <h4>Weather Dashboard</h4>
             <h1 class="cityName">City Name, State</h1>
             <div class="statContainer">
+              <div class="map"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106135.1203099034!2d-84.49064376828504!3d33.76783582520046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f5045d6993098d%3A0x66fede2f990b630b!2sAtlanta%2C%20GA!5e0!3m2!1sen!2sus!4v1627983357185!5m2!1sen!2sus" width="73%" height="80px" style="border:0;" allowfullscreen="" loading="lazy"></iframe></div>
               <div>Temperature: <span class="temperature"></span></div>
               <div>Humidity: <span class="humidity"></span></div>
+              <div>Condition: 
+                <span class="condition">
+                  <img class="conditionImage" src="./assets/css/images/Sun-Icon.svg">
+                </span>
+              </div>
               <div>Wind: <span class="wind"></span></div>
               <div>UV Index: <span class="UV-Index"></span></div>
             </div>
@@ -51,9 +57,84 @@
 
 
         <div class="fiveDayForecast">
-        <h2 class="fiveDayForecastText">5-Day Forecast</h2>
-        <div class="cardContainer">
-        </div>
+          <h2 class="fiveDayForecastText">5-Day Forecast</h2>
+          <div class="cardContainer">
+            <div class="card cardStart">
+              <div class="dateIcon"><h4 class="date">Jan 1st</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+                <h3 class="dayText">Weekday</h3>
+                <div class="spanContainer">
+                  <div class="stat">Temperature: 
+                    <span class="cardTemperature"></span>
+                  </div>
+                  <div class="stat">Wind Speed: 
+                    <span class="cardWind"></span>
+                  </div>
+                  <div class="stat">Humidity: 
+                    <span class="cardHumidity"></span>
+                  </div>
+                </div>
+            </div>
+            <div class="card cardStart">
+              <div class="dateIcon"><h4 class="date">Jan 1st</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+                <h3 class="dayText">Weekday</h3>
+                <div class="spanContainer">
+                  <div class="stat">Temperature: 
+                    <span class="cardTemperature"></span>
+                  </div>
+                  <div class="stat">Wind Speed: 
+                    <span class="cardWind"></span>
+                  </div>
+                  <div class="stat">Humidity: 
+                    <span class="cardHumidity"></span>
+                  </div>
+                </div>
+            </div>
+            <div class="card cardStart">
+              <div class="dateIcon"><h4 class="date">Jan 1st</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+                <h3 class="dayText">Weekday</h3>
+                <div class="spanContainer">
+                  <div class="stat">Temperature: 
+                    <span class="cardTemperature"></span>
+                  </div>
+                  <div class="stat">Wind Speed: 
+                    <span class="cardWind"></span>
+                  </div>
+                  <div class="stat">Humidity: 
+                    <span class="cardHumidity"></span>
+                  </div>
+                </div>
+            </div>
+            <div class="card cardStart">
+              <div class="dateIcon"><h4 class="date">Jan 1st</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+                <h3 class="dayText">Weekday</h3>
+                <div class="spanContainer">
+                  <div class="stat">Temperature: 
+                    <span class="cardTemperature"></span>
+                  </div>
+                  <div class="stat">Wind Speed: 
+                    <span class="cardWind"></span>
+                  </div>
+                  <div class="stat">Humidity: 
+                    <span class="cardHumidity"></span>
+                  </div>
+                </div>
+            </div>
+            <div class="card cardStart">
+              <div class="dateIcon"><h4 class="date">Jan 1st</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+                <h3 class="dayText">Weekday</h3>
+                <div class="spanContainer">
+                  <div class="stat">Temperature: 
+                    <span class="cardTemperature"></span>
+                  </div>
+                  <div class="stat">Wind Speed: 
+                    <span class="cardWind"></span>
+                  </div>
+                  <div class="stat">Humidity: 
+                    <span class="cardHumidity"></span>
+                  </div>
+                </div>
+            </div>
+          </div>
         </div>
       </article>
 

@@ -2,7 +2,7 @@
 Weather App
 
 ## Application Design
-![A user can store upcoming small work events to cycle through and list out for the work day.](./assets/css/images/designs/Weather-App.png)
+![A user can store upcoming small work events to cycle through and list out for the work day.](./assets/css/images/designs/Weather-App-2.png)
 
 ## Application Function
 

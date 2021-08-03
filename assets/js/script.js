@@ -11,6 +11,7 @@ var cityNameText = $('.cityName');
 var cardContainer = $('.cardContainer');
 var temperature = $('.temperature');
 var humidity = $('.humidity');
+var condition = $('.conditionImage');
 var wind = $('.wind');
 var uvIndex = $('.UV-Index');
 var cardDate = $('.date');
@@ -37,6 +38,7 @@ searchButton.on('click',function(event) {
     .then(function(response) {
         return response.json();
     }).then(function(data) {
+        console.log(data);
         var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
         cityNameText.html(data.name);
         temperature.html(fahrenheit + '° F');
@@ -54,6 +56,33 @@ searchButton.on('click',function(event) {
             var currentTime = moment.unix(data.current.dt).format('dddd, MMMM Do YYYY, h:mm a');
             var currentTimeEl = $(`<span class="currentTime"> - ${currentTime} </span>`);
             cityNameText.append(currentTimeEl);
+            cardContainer.html('');
+            for (var i = 1; i < 6; i++) {
+                var fullDates = moment.unix(data.daily[i].dt).format('MMMM Do');
+                var day = moment.unix(data.daily[i].dt).format('dddd');
+                var mainIcon = data.daily[0].weather[0].icon;
+                var mainIconLink = `https://openweathermap.org/img/wn/${mainIcon}@2x.png`;
+                condition.attr('src',mainIconLink);
+                var icon = data.daily[i].weather[0].icon;
+                var iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+                var foreCastCards = $(`
+                <div class="card">
+                  <div class="dateIcon"><h4 class="date">${fullDates}</h4><img class="icon" src="${iconLink}"></div>
+                    <h3 class="dayText">${day}</h3>
+                    <div class="spanContainer">
+                        <div class="stat">Temperature: 
+                            <span class="cardTemperature">${Math.floor((data.daily[i].temp.max - 273.15)* 1.8 + 32.00)} ° F</span>
+                        </div>
+                        <div class="stat">Wind Speed: 
+                            <span class="cardWind">${data.daily[i].wind_speed}</span>
+                        </div>
+                        <div class="stat">Humidity: 
+                            <span class="cardHumidity">${data.daily[i].humidity}</span>
+                        </div>
+                    </div>
+                </div>`);
+                cardContainer.append(foreCastCards);
+            }
         })
     })
     // location.reload(true);
@@ -74,6 +103,7 @@ locationButtons.on('click',function(event) {
     .then(function(response) {
         return response.json();
     }).then(function(data) {
+        console.log(data);
         var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
         cityNameText.html(data.name);
         temperature.html(fahrenheit + '° F');
@@ -95,6 +125,10 @@ locationButtons.on('click',function(event) {
             for (var i = 1; i < 6; i++) {
                 var fullDates = moment.unix(data.daily[i].dt).format('MMMM Do');
                 var day = moment.unix(data.daily[i].dt).format('dddd');
+                var mainIcon = data.daily[0].weather[0].icon;
+                var mainIconLink = `https://openweathermap.org/img/wn/${mainIcon}@2x.png`;
+                condition.addClass('conditionImageInverted');
+                condition.attr('src',mainIconLink);
                 var icon = data.daily[i].weather[0].icon;
                 var iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
                 var foreCastCards = $(`
