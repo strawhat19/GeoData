@@ -33,6 +33,14 @@ h2 {
     font-size: 2em;
 }
 
+h3 {
+    font-size: 1.1em;
+}
+
+span {
+    font-size: 16px;
+}
+
 .topbar {
     background: linear-gradient(103deg,var(--pink),var(--softViolet));
     height: 2.5em;
@@ -121,12 +129,13 @@ article {
 }
 
 .dashboard {
-    background: linear-gradient(90deg,var(--blue) 35%,transparent 45%),url(./images/Sunrise.svg);
+    background: linear-gradient(90deg,rgb(24 192 243 / 85%) 42%,transparent 45%),url(./images/Sunrise.svg);
     background-size: cover;
     background-position: 7% 50%;
     border: 2px solid var(--blue);
     padding: 2em;
     border-radius: 25px;
+    backdrop-filter: blur(2px);
 }
 
 .statContainer {
