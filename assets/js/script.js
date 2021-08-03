@@ -2,21 +2,44 @@
 console.log('Weather App!');
 
 var apiKey = 'ce5300e7acaa327ad655b8a21d5130d8';
-var cityName = 'Atlanta';
-
-var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
+var cityName = '';
 
 var searchInput = $('#search');
 var searchButton = $('.searchButton');
 var citiesList = $('.locationList');
 var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
+var cityNameText = $('.cityName');
+var temperature = $('.temperature');
+var humidity = $('.humidity');
+var wind = $('.wind');
+var uvIndex = $('.UV-Index');
+
 
 searchButton.on('click',function(event) {
     event.preventDefault();
     var searchInputValue = searchInput.val();
     cities.push(searchInputValue);
+    cities.splice(13);
+    // if (cities.length === 13) {
+    //     var oldCity = cities.length-1;
+    //     cities[oldCity].remove();
+    // }
     localStorage.setItem('Cities History', JSON.stringify(cities));
-    location.reload(true);
+    var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInputValue}&appid=${apiKey}`;
+    // Fetch
+    fetch(requestURL)
+    .then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        console.log(data);
+        cityNameText.html(' ' + data.name);
+        temperature.html(' ' + data.main.temp);
+        humidity.html(' ' + data.main.humidity);
+        wind.html(' ' + data.wind.speed);
+    })
+
+
+    // location.reload(true);
 })
 
 cities.forEach((city,index) => {
@@ -24,8 +47,8 @@ cities.forEach((city,index) => {
     citiesList.append(locationButton);
 })
 
-fetch(requestURL).then(function(response) {
-    return response.json();
-})
+
+
+
 
 
