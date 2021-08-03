@@ -28,6 +28,10 @@ body {
     font-family: 'Poppins';
 }
 
+h1 {
+    font-size: 2.2em;
+}
+
 h2 {
     text-align: center;
     font-size: 2em;
@@ -143,6 +147,13 @@ article {
     border-radius: 25px;
     backdrop-filter: blur(2px);
     position: relative;
+    z-index: 1;
+    display: flex;
+    grid-gap: 35px;
+}
+
+.textContainer {
+    width: 100%;
 }
 
 .dashboard::after {
@@ -158,7 +169,7 @@ article {
 }
 
 .statContainer {
-    width: 65%;
+    width: 100%;
     padding: 0.3em 0;
     grid-gap: 1em 0;
     display: flex;
@@ -166,7 +177,7 @@ article {
 }
 
 .statContainer div {
-    width: 26%;
+    width: 33%;
 }
 
 .condition {
@@ -179,9 +190,14 @@ article {
     border-radius: 50px;
 }
 
+.conditionText {
+    padding: 0 .3em;
+}
+
 span.condition::before {
     position: absolute;
     content: '';
+    max-width: 1.4em;
     height: 100%;
     width: 100%;
     background: var(--softViolet);
@@ -192,6 +208,7 @@ span.condition::before {
 .conditionImageInverted {
     width: 11%;
     filter: invert(1) brightness(1.3);
+    max-width: 1.35em;
 }
 
 .fiveDayForecast {
@@ -257,4 +274,8 @@ span.condition::before {
 #map {
     height: 100%;
     width: 100%;
+    border-radius: 25px;
+    opacity: 0.85;
+    backdrop-filter: blur(10px);
+    border: solid 3px #00c4ff;
 }

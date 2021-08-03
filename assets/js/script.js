@@ -3,13 +3,12 @@ console.log('Weather App!');
 
 function initmap(){
     var options = {
-        zoom: 8,
-        center: {lat:42.3601,lng:-71.0589}
+        zoom: 1,
+        center: {lat:30,lng:0}
     }
-
+    
     var map = new google.maps.Map(document.getElementById('map'),options);
 }
-
 initmap();
 
 var apiKey = 'ce5300e7acaa327ad655b8a21d5130d8';
@@ -22,7 +21,9 @@ var cityNameText = $('.cityName');
 var cardContainer = $('.cardContainer');
 var temperature = $('.temperature');
 var humidity = $('.humidity');
+var conditionDiv = $('.conditionDiv');
 var condition = $('.conditionImage');
+var conditionText = $('.conditionText');
 var wind = $('.wind');
 var uvIndex = $('.UV-Index');
 var cardDate = $('.date');
@@ -51,13 +52,22 @@ searchButton.on('click',function(event) {
     }).then(function(data) {
         console.log(data);
         var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
-        cityNameText.html(data.name);
+        cityNameText.html(data.name + ', ' + data.sys.country);
         temperature.html(fahrenheit + '° F');
         humidity.html(data.main.humidity);
         wind.html(data.wind.speed);
 
         var lat = data.coord.lat;
         var lon = data.coord.lon;
+        function initmap(){
+            var options = {
+                zoom: 9,
+                center: {lat:lat,lng:lon}
+            }
+            
+            var map = new google.maps.Map(document.getElementById('map'),options);
+        }
+        initmap();
         var latlonLink = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`;
         fetch(latlonLink).then(function(response) {
             return response.json();
@@ -68,11 +78,13 @@ searchButton.on('click',function(event) {
             var currentTimeEl = $(`<span class="currentTime"> - ${currentTime} </span>`);
             cityNameText.append(currentTimeEl);
             cardContainer.html('');
+            conditionText.html(data.daily[0].weather[0].main);
             for (var i = 1; i < 6; i++) {
                 var fullDates = moment.unix(data.daily[i].dt).format('MMMM Do');
                 var day = moment.unix(data.daily[i].dt).format('dddd');
                 var mainIcon = data.daily[0].weather[0].icon;
                 var mainIconLink = `https://openweathermap.org/img/wn/${mainIcon}@2x.png`;
+                condition.addClass('conditionImageInverted');
                 condition.attr('src',mainIconLink);
                 var icon = data.daily[i].weather[0].icon;
                 var iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
@@ -116,13 +128,22 @@ locationButtons.on('click',function(event) {
     }).then(function(data) {
         console.log(data);
         var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
-        cityNameText.html(data.name);
+        cityNameText.html(data.name + ', ' + data.sys.country);
         temperature.html(fahrenheit + '° F');
         humidity.html(data.main.humidity);
         wind.html(data.wind.speed);
 
         var lat = data.coord.lat;
         var lon = data.coord.lon;
+        function initmap(){
+            var options = {
+                zoom: 9,
+                center: {lat:lat,lng:lon}
+            }
+            
+            var map = new google.maps.Map(document.getElementById('map'),options);
+        }
+        initmap();
         var latlonLink = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`;
         fetch(latlonLink).then(function(response) {
             return response.json();
@@ -133,6 +154,7 @@ locationButtons.on('click',function(event) {
             var currentTimeEl = $(`<span class="currentTime"> - ${currentTime}</span>`);
             cityNameText.append(currentTimeEl);
             cardContainer.html('');
+            conditionText.html(data.daily[0].weather[0].main);
             for (var i = 1; i < 6; i++) {
                 var fullDates = moment.unix(data.daily[i].dt).format('MMMM Do');
                 var day = moment.unix(data.daily[i].dt).format('dddd');
