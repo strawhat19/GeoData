@@ -34,11 +34,17 @@ h2 {
 }
 
 h3 {
-    font-size: 1.1em;
+    font-size: 1.7em;
+}
+
+h4 {
+    font-weight: 200;
+    font-size: 1em;
 }
 
 span {
     font-size: 16px;
+    font-weight: 300;
 }
 
 .topbar {
@@ -169,7 +175,37 @@ article {
 .card {
     background: var(--softViolet);
     border-radius: 25px;
-    padding: 1em;
+    padding: 2em;
     height: 420px;
     width: 240px;
+}
+
+.dateIcon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon {
+    width: 30%;
+    filter: invert(1) brightness(1.3);
+}
+
+.spanContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    padding: 3em 0em;
+}
+
+.stat {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.stat span {
+    color: var(--violet);
+    font-weight: 700;
 }

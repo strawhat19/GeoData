@@ -8,10 +8,17 @@ var searchButton = $('.searchButton');
 var citiesList = $('.locationList');
 var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
 var cityNameText = $('.cityName');
+var cardContainer = $('.cardContainer');
 var temperature = $('.temperature');
 var humidity = $('.humidity');
 var wind = $('.wind');
 var uvIndex = $('.UV-Index');
+var cardDate = $('.date');
+var cardIcon = $('.icon');
+var cardDayText = $('.dayText');
+var cardTemperature = $('.cardTemperature');
+var cardWind = $('cardWind');
+var cardHumidity = $('.cardHumidity');
 
 // When User Clicks Search Button
 searchButton.on('click',function(event) {
@@ -44,7 +51,7 @@ searchButton.on('click',function(event) {
         }).then(function(data) {
             uvIndex.html(data.current.uvi);
             console.log(data);
-            var currentTime = moment.unix(data.current.dt).format('dddd, MMMM Do YYYY, h:mm:ss a');
+            var currentTime = moment.unix(data.current.dt).format('dddd, MMMM Do YYYY, h:mm a');
             var currentTimeEl = $(`<span class="currentTime"> - ${currentTime} </span>`);
             cityNameText.append(currentTimeEl);
         })
@@ -81,9 +88,33 @@ locationButtons.on('click',function(event) {
         }).then(function(data) {
             uvIndex.html(data.current.uvi);
             console.log(data);
-            var currentTime = moment.unix(data.current.dt).format('dddd, MMMM Do YYYY, h:mm:ss a');
-            var currentTimeEl = $(`<span class="currentTime"> - ${currentTime} </span>`);
+            var currentTime = moment.unix(data.current.dt).format('dddd, MMMM Do YYYY, h:mm a');
+            var currentTimeEl = $(`<span class="currentTime"> - ${currentTime}</span>`);
             cityNameText.append(currentTimeEl);
+            cardContainer.html('');
+            for (var i = 1; i < 6; i++) {
+                var fullDates = moment.unix(data.daily[i].dt).format('MMMM Do');
+                var day = moment.unix(data.daily[i].dt).format('dddd');
+                var icon = data.daily[i].weather[0].icon;
+                var iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+                var foreCastCards = $(`
+                <div class="card">
+                  <div class="dateIcon"><h4 class="date">${fullDates}</h4><img class="icon" src="${iconLink}"></div>
+                    <h3 class="dayText">${day}</h3>
+                    <div class="spanContainer">
+                        <div class="stat">Temperature: 
+                            <span class="cardTemperature">${Math.floor((data.daily[i].temp.max - 273.15)* 1.8 + 32.00)} ° F</span>
+                        </div>
+                        <div class="stat">Wind Speed: 
+                            <span class="cardWind">${data.daily[i].wind_speed}</span>
+                        </div>
+                        <div class="stat">Humidity: 
+                            <span class="cardHumidity">${data.daily[i].humidity}</span>
+                        </div>
+                    </div>
+                </div>`);
+                cardContainer.append(foreCastCards);
+            }
         })
     })
 })
