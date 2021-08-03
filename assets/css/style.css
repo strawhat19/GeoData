@@ -1,3 +1,13 @@
+/* Weather App Stylesheet */
+
+/* Imported Google Fonts */
+/* Montserrat */
+/* Lato */
+/* Open Sans */
+/* Poppins */
+/* Source Sans Pro */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Sans+Pro:ital,wght@0,200;0,300;1,200&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -15,4 +25,141 @@
 body {
     background: var(--violet);
     color: white;
+    font-family: 'Poppins';
+}
+
+h2 {
+    text-align: center;
+    font-size: 2em;
+}
+
+.topbar {
+    background: linear-gradient(103deg,var(--pink),var(--softViolet));
+    height: 2.5em;
+    margin-bottom: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}
+
+main {
+    display: flex;
+    justify-content: space-between;
+    padding: 0em 5em 3em;
+    grid-gap: 3em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    grid-gap: .7em;
+}
+
+ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    grid-gap: .7em;
+    padding-top: 1em;
+    margin-bottom: 0;
+}
+
+input {
+    background: transparent;
+    border: 2px solid var(--blue);
+    border-radius: 25px;
+    padding: 0.5em 1em;
+    color: #fff;
+}
+
+button {
+    background: transparent;
+    border: 2px solid var(--blue);
+    border-radius: 25px;
+    padding: 0.3em 1em;
+    color: #fff;
+    transition: 150ms ease-in-out;
+    width: 100%;
+}
+
+button:hover {
+    background: transparent;
+}
+
+.searchButton {
+    background: var(--blue);
+}
+
+.locationButton {
+    background: var(--pink);
+    border-color: var(--pink);
+}
+
+:focus {
+    outline: none !important;
+}
+
+::placeholder {
+    color: #fff;
+}
+
+aside {
+    width: 25%;
+}
+
+article {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    justify-content: space-between;
+}
+
+.rightSide h2 {
+    text-align: left;
+}
+
+.dashboard {
+    background: linear-gradient(90deg,var(--blue) 70%,transparent),url(./images/Sunrise.svg);
+    background-size: cover;
+    background-position: 7% 50%;
+    border: 2px solid var(--blue);
+    padding: 2em;
+    border-radius: 25px;
+}
+
+.statContainer {
+    width: 65%;
+    padding: 0.3em 0;
+    grid-gap: 1em 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.statContainer div {
+    width: 50%;
+}
+
+.fiveDayForecast {
+    display: flex;
+    flex-direction: column;
+}
+
+.fiveDayForecastText {
+    padding: .5em 0;
+    margin-bottom: 0;
+}
+
+.cardContainer {
+    display: flex;
+    justify-content: space-between;
+    grid-gap: 1em;
+}
+
+.card {
+    background: var(--softViolet);
+    border-radius: 25px;
+    padding: 1em;
+    height: 420px;
+    width: 240px;
 }

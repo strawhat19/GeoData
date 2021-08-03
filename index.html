@@ -19,9 +19,64 @@
 
   <body>
 
-    <header>
-        <h1>Weather App</h1>
-    </header>
+    <header class="topbar">Weather App</header>
+
+    <main>
+
+      <aside class="sidebar">
+        <form action="" class="searchForm">
+          <input type="search" name="search" id="search" placeholder="Search..."></input>
+          <button type="submit" class="searchButton">Search</button>
+        </form>
+        <div class="locationList">
+          <ul class="locationListList">
+            <h2 class="listTitle">Cities</h2>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+            <li class="location"><button class="locationButton">City Name</button></li>
+          </ul>
+        </div>
+      </aside>
+
+      <article class="rightSide">
+        <div class="dashboard">
+          <div class="textContainer">
+            <h2>Weather Dashboard</h2>
+            <h1 class="cityName">City Name, State</h1>
+            <div class="statContainer">
+              <div class="temperature">Temperature ___</div>
+              <div class="humidity">Humidity ___</div>
+              <div class="wind">Wind ___</div>
+              <div class="UV-Index">UV Index ___</div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="fiveDayForecast">
+        <h2 class="fiveDayForecastText">5-Day Forecast</h2>
+        <div class="cardContainer">
+          <div class="card">Monday</div>
+          <div class="card">Monday</div>
+          <div class="card">Monday</div>
+          <div class="card">Monday</div>
+          <div class="card">Monday</div>
+          </div>
+        </div>
+      </article>
+
+    </main>
 
 
 
