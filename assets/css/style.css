@@ -82,6 +82,19 @@ form {
     margin-bottom: 0;
 }
 
+.citiesData {
+    display: flex;
+    justify-content: space-between;
+    grid-gap: 1em;
+    padding-bottom: 0.3em;
+}
+
+.citiesData button {
+    background: var(--softViolet);
+    border-color: var(--softViolet);
+    margin: 0.1em 0;
+}
+
 input {
     background: transparent;
     border: 3px solid var(--blue);

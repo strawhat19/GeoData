@@ -18,6 +18,7 @@ var cityName = '';
 var searchInput = $('#search');
 var searchButton = $('.searchButton');
 var citiesList = $('.locationList');
+var clearCities = $('.clearCities');
 var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
 cities.splice(11);
 var cityNameText = $('.cityName');
@@ -57,7 +58,7 @@ searchButton.on('click',function(event) {
         temperature.html(fahrenheit + '° F');
         humidity.html(data.main.humidity);
         wind.html(data.wind.speed);
-        coordinates.html(Math.floor(data.coord.lat + ', ' + data.coord.lon));
+        coordinates.html(Math.floor(data.coord.lat) + ', ' + Math.floor(data.coord.lon));
 
         // Initializing Coords
         var lat = data.coord.lat;
@@ -198,4 +199,9 @@ locationButtons.on('click',function(event) {
             }
         })
     })
+})
+
+clearCities.on('click',function() {
+    localStorage.clear();
+    location.reload(true);
 })
