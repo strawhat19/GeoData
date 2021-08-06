@@ -111,7 +111,7 @@ searchButton.on('click',function(event) {
                             <h3 class="dayText">${day}</h3>
                             <div class="spanContainer">
                                 <div class="stat">Temperature: 
-                                    <span class="cardTemperature">${Math.floor((data.daily[i].temp.max - 273.15)* 1.8 + 32.00)} ° F</span>
+                                    <span class="cardTemperature">${Math.floor((data.daily[i].temp.max - 273.15)* 1.8 + 32.00)}° F</span>
                                 </div>
                                 <div class="stat">Wind Speed: 
                                     <span class="cardWind">${data.daily[i].wind_speed}</span>

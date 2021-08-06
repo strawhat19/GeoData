@@ -52,7 +52,8 @@ span {
 }
 
 .topBar {
-    background: linear-gradient(103deg,var(--pink),var(--softViolet));
+    /* background: linear-gradient(103deg,var(--pink),var(--softViolet)); */
+    background: var(--blue);
     height: 2.5em;
     margin-bottom: 5em;
     display: flex;
@@ -300,7 +301,8 @@ span.condition::before {
 }
 
 .bottomBar {
-    background: linear-gradient(103deg,var(--pink),var(--softViolet));
+    /* background: linear-gradient(103deg,var(--pink),var(--softViolet)); */
+    background: var(--blue);
     height: 2.5em;
     display: flex;
     justify-content: center;
