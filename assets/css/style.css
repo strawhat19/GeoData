@@ -29,12 +29,12 @@ body {
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 1.8em;
 }
 
 h2 {
     text-align: center;
-    font-size: 2em;
+    font-size: 1.75em;
 }
 
 h3 {
@@ -291,6 +291,7 @@ span.condition::before {
     opacity: 0.85;
     backdrop-filter: blur(10px);
     border: solid 3px #00c4ff;
+    min-height: 145px;
 }
 
 .bottomBar {
@@ -300,7 +301,7 @@ span.condition::before {
     justify-content: center;
     align-items: center;
     font-weight: 600;
-    position: absolute;
+    position: fixed;
     width: 100%;
     bottom: 0;
 }

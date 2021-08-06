@@ -6,8 +6,7 @@ function initmap(){
     var options = {
         zoom: 1,
         center: {lat:30,lng:0}
-    }
-    
+    } // Map Options
     var map = new google.maps.Map(document.getElementById('map'),options);
 } // Invoking Create Map Function using Google Maps API
 initmap();
@@ -22,7 +21,6 @@ var clearCities = $('.clearCities');
 var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
 cities.splice(11);
 var uniqueCities = [...new Set(cities)];
-console.log(uniqueCities);
 var cityNameText = $('.cityName');
 var cardContainer = $('.cardContainer');
 var temperature = $('.temperature');
@@ -78,8 +76,7 @@ searchButton.on('click',function(event) {
                     var options = {
                         zoom: 9,
                         center: {lat:lat,lng:lon}
-                    }
-                    
+                    } // Map Options
                     var map = new google.maps.Map(document.getElementById('map'),options);
                 } // Reinvoking Map with new Coords
                 initmap();
@@ -163,8 +160,7 @@ locationButtons.on('click',function(event) {
             var options = {
                 zoom: 9,
                 center: {lat:lat,lng:lon}
-            }
-            
+            } // Map Options
             var map = new google.maps.Map(document.getElementById('map'),options);
         } // Reinvoking map with new coords
         initmap();
