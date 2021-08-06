@@ -55,7 +55,7 @@ span {
     /* background: linear-gradient(103deg,var(--pink),var(--softViolet)); */
     background: var(--blue);
     height: 2.5em;
-    margin-bottom: 5em;
+    margin-bottom: 4.5em;
     display: flex;
     justify-content: center;
     align-items: center;

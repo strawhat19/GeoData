@@ -61,6 +61,11 @@ searchButton.on('click',function(event) {
                 cities.splice(10);
                 var uniqueCities = [...new Set(cities)];
                 localStorage.setItem('Cities History', JSON.stringify(uniqueCities));
+                uniqueCities = JSON.parse(localStorage.getItem('Cities History'));
+                uniqueCities = [...new Set(uniqueCities)];
+                var buttonContainer = $('.buttonContainer');
+                buttonContainer.html('');
+                createButtons(uniqueCities);
                 // Converting Temperature from Kelvin to Fahrenheit
                 var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
                 cityNameText.html(data.name + ', ' + data.sys.country);
@@ -134,11 +139,16 @@ searchButton.on('click',function(event) {
     // })
 })
 
-// Creating Buttons for each City Stored in Cities Array
-uniqueCities.forEach((city,index) => {
-    var locationButton = $(`<button class="locationButton" id="${index}" data-location="${city}">${city}</button>`);
-    citiesList.after(locationButton);
-})
+function createButtons(uniqueCities){
+    uniqueCities.forEach((city,index) => {
+        var locationButton = $(`<button class="locationButton" id="${index}" data-location="${city}">${city}</button>`);
+        // citiesList.after(locationButton);
+        var buttonContainer = $('.buttonContainer');
+        buttonContainer.append(locationButton);
+    })
+}
+
+createButtons(uniqueCities);
 
 // When user clicks on Location Buttons
 var locationButtons = $('.locationButton');
