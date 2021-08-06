@@ -19,7 +19,7 @@ var searchButton = $('.searchButton');
 var citiesList = $('.locationList');
 var clearCities = $('.clearCities');
 var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
-cities.splice(11);
+cities.splice(10);
 var uniqueCities = [...new Set(cities)];
 var cityNameText = $('.cityName');
 var cardContainer = $('.cardContainer');
@@ -58,8 +58,9 @@ searchButton.on('click',function(event) {
                 return;
             } else {
                 cities.push(searchInputValue);
-                cities.splice(11);
-                localStorage.setItem('Cities History', JSON.stringify(cities));
+                cities.splice(10);
+                var uniqueCities = [...new Set(cities)];
+                localStorage.setItem('Cities History', JSON.stringify(uniqueCities));
                 // Converting Temperature from Kelvin to Fahrenheit
                 var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
                 cityNameText.html(data.name + ', ' + data.sys.country);
@@ -126,12 +127,17 @@ searchButton.on('click',function(event) {
             }
         })
     }
+    // // Creating Buttons for each City Stored in Cities Array
+    // uniqueCities.forEach((city,index) => {
+    //     var locationButton = $(`<button class="locationButton" id="${index}" data-location="${city}">${city}</button>`);
+    //     citiesList.after(locationButton);
+    // })
 })
 
 // Creating Buttons for each City Stored in Cities Array
 uniqueCities.forEach((city,index) => {
     var locationButton = $(`<button class="locationButton" id="${index}" data-location="${city}">${city}</button>`);
-    citiesList.append(locationButton);
+    citiesList.after(locationButton);
 })
 
 // When user clicks on Location Buttons

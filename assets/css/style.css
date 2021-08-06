@@ -71,7 +71,7 @@ main {
 form {
     display: flex;
     flex-direction: column;
-    grid-gap: .7em;
+    grid-gap: 1em;
 }
 
 .locationList {
@@ -86,7 +86,11 @@ form {
     display: flex;
     justify-content: space-between;
     grid-gap: 1em;
-    padding-bottom: 0.3em;
+    align-items: center;
+}
+
+.listTitle {
+    margin-bottom: 0;
 }
 
 .citiesData button {
@@ -126,6 +130,7 @@ button:hover {
     background: var(--pink);
     border-color: var(--pink);
     text-transform: capitalize;
+    margin: 1em 0 0;
 }
 
 :focus {
