@@ -43,7 +43,7 @@ searchButton.on('click',function(event) {
     event.preventDefault();
     var searchInputValue = searchInput.val();
     if (!searchInputValue) {
-        alert('no');
+        alert('Please Enter Valid Location.');
         return;
     } else {
         var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInputValue}&appid=${apiKey}`;
