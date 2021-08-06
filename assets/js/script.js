@@ -21,6 +21,8 @@ var citiesList = $('.locationList');
 var clearCities = $('.clearCities');
 var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
 cities.splice(11);
+var uniqueCities = [...new Set(cities)];
+console.log(uniqueCities);
 var cityNameText = $('.cityName');
 var cardContainer = $('.cardContainer');
 var temperature = $('.temperature');
@@ -130,7 +132,7 @@ searchButton.on('click',function(event) {
 })
 
 // Creating Buttons for each City Stored in Cities Array
-cities.forEach((city,index) => {
+uniqueCities.forEach((city,index) => {
     var locationButton = $(`<button class="locationButton" id="${index}" data-location="${city}">${city}</button>`);
     citiesList.append(locationButton);
 })

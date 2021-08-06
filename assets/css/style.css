@@ -51,7 +51,7 @@ span {
     font-weight: 300;
 }
 
-.topbar {
+.topBar {
     background: linear-gradient(103deg,var(--pink),var(--softViolet));
     height: 2.5em;
     margin-bottom: 5em;
@@ -291,4 +291,16 @@ span.condition::before {
     opacity: 0.85;
     backdrop-filter: blur(10px);
     border: solid 3px #00c4ff;
+}
+
+.bottomBar {
+    background: linear-gradient(103deg,var(--pink),var(--softViolet));
+    height: 2.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
 }
