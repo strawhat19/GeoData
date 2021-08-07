@@ -127,10 +127,24 @@ button:hover {
     background: var(--blue);
 }
 
+.locationElement {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    grid-gap: 1em;
+}
+
 .locationButton {
     background: var(--pink);
     border-color: var(--pink);
     text-transform: capitalize;
+    margin: 1em 0 0;
+    width: 85%;
+}
+
+.removeCityButton {
+    background: var(--blue);
+    width: 15%;
     margin: 1em 0 0;
 }
 
@@ -311,4 +325,17 @@ span.condition::before {
     position: fixed;
     width: 100%;
     bottom: 0;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 1679px) {
+    aside {
+        width: 20%;
+        transition: 150ms ease-in-out;
+    }
+
+    article {
+        width: 76%;
+        transition: 150ms ease-in-out;
+    }
 }

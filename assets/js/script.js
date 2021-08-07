@@ -18,6 +18,7 @@ var searchInput = $('#search');
 var searchButton = $('.searchButton');
 var citiesList = $('.locationList');
 var clearCities = $('.clearCities');
+var buttonContainer = $('.buttonContainer');
 var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
 cities.splice(10);
 var uniqueCities = [...new Set(cities)];
@@ -41,6 +42,7 @@ var coordinates = $('.coords');
 // When User Clicks Search Button
 searchButton.on('click',function(event) {
     event.preventDefault();
+    // console.log(newCities);
     var searchInputValue = searchInput.val();
     if (!searchInputValue) {
         alert('Please Enter Valid Location.');
@@ -52,7 +54,6 @@ searchButton.on('click',function(event) {
         .then(function(response) {
             return response.json();
         }).then(function(data) {
-            console.log(data);
             if (data.cod === '404') {
                 alert('City Not Found.');
                 return;
@@ -66,6 +67,7 @@ searchButton.on('click',function(event) {
                 var buttonContainer = $('.buttonContainer');
                 buttonContainer.html('');
                 createButtons(uniqueCities);
+                searchInput.val('');
                 // Converting Temperature from Kelvin to Fahrenheit
                 var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
                 cityNameText.html(data.name + ', ' + data.sys.country);
@@ -93,7 +95,6 @@ searchButton.on('click',function(event) {
                     return response.json();
                 }).then(function(data) {
                     uvIndex.html(data.current.uvi);
-                    console.log(data);
                     var currentTime = moment.unix(data.current.dt).format('dddd, MMMM Do YYYY, h:mm a');
                     var currentTimeEl = $(`<span class="currentTime"> - ${currentTime} </span>`);
                     cityNameText.append(currentTimeEl);
@@ -132,16 +133,11 @@ searchButton.on('click',function(event) {
             }
         })
     }
-    // // Creating Buttons for each City Stored in Cities Array
-    // uniqueCities.forEach((city,index) => {
-    //     var locationButton = $(`<button class="locationButton" id="${index}" data-location="${city}">${city}</button>`);
-    //     citiesList.after(locationButton);
-    // })
 })
 
 function createButtons(uniqueCities){
     uniqueCities.forEach((city,index) => {
-        var locationButton = $(`<button class="locationButton" id="${index}" data-location="${city}">${city}</button>`);
+        var locationButton = $(`<div class="locationElement"><button class="locationButton" id="${index}" data-location="${city}">${city}</button><button class="removeCityButton" id="${index}">X</button></div>`);
         // citiesList.after(locationButton);
         var buttonContainer = $('.buttonContainer');
         buttonContainer.append(locationButton);
@@ -152,7 +148,7 @@ createButtons(uniqueCities);
 
 // When user clicks on Location Buttons
 var locationButtons = $('.locationButton');
-locationButtons.on('click',function(event) {
+buttonContainer.on('click','.locationButton',function(event) {
     var location = $(event.target).html();
     var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`;
     // Repeating Fetch of 1st dataset
@@ -160,7 +156,6 @@ locationButtons.on('click',function(event) {
     .then(function(response) {
         return response.json();
     }).then(function(data) {
-        console.log(data);
         var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
         cityNameText.html(data.name + ', ' + data.sys.country);
         temperature.html(fahrenheit + '° F');
@@ -185,7 +180,6 @@ locationButtons.on('click',function(event) {
             return response.json();
         }).then(function(data) {
             uvIndex.html(data.current.uvi);
-            console.log(data);
             var currentTime = moment.unix(data.current.dt).format('dddd, MMMM Do YYYY, h:mm a');
             var currentTimeEl = $(`<span class="currentTime"> - ${currentTime}</span>`);
             cityNameText.append(currentTimeEl);
@@ -227,4 +221,13 @@ locationButtons.on('click',function(event) {
 clearCities.on('click',function() {
     localStorage.clear();
     location.reload(true);
+})
+
+var removeCityButton = buttonContainer.find('.locationElement').find('.removeCityButton');
+buttonContainer.on('click','.removeCityButton',function(event){
+    $(event.target).parent().remove();
+    cities = JSON.parse(localStorage.getItem('Cities History'));
+    var cityToRemoveIndex = $(event.target).attr('id');
+    cities.splice(cityToRemoveIndex,1);
+    localStorage.setItem('Cities History',JSON.stringify(cities));
 })
