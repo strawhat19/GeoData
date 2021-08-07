@@ -264,7 +264,7 @@ span.condition::before {
     background: var(--softViolet);
     border-radius: 25px;
     padding: 2em;
-    height: 420px;
+    height: 440px;
     width: 240px;
 }
 
@@ -330,12 +330,166 @@ span.condition::before {
 /* Mobile Responsiveness */
 @media screen and (max-width: 1679px) {
     aside {
-        width: 20%;
+        width: 21%;
         transition: 150ms ease-in-out;
     }
 
     article {
         width: 76%;
         transition: 150ms ease-in-out;
+    }
+
+    .cityName {
+        margin-bottom: 1em;
+    }
+
+    .statContainer, .statContainer span, .stat, .stat span {
+        font-size: .9em;
+    }
+
+    h1,h2,h3 {
+        font-size: 1.5em;
+    }
+
+    .conditionImageInverted {
+        margin-top: -.3em;
+    }
+}
+
+@media screen and (max-width: 1550px) {
+    main {
+        flex-direction: column;
+        transition: 150ms ease-in-out;
+    }
+
+    aside {
+        width: 100%;
+        transition: 150ms ease-in-out;
+    }
+
+    article {
+        width: 100%;
+        transition: 150ms ease-in-out;
+    }
+
+    .bottomBar {
+        position: static;
+    }
+}
+
+@media screen and (max-width: 1300px) {
+
+    .dashboard {
+        flex-direction: column;
+    }
+
+    .dashboard::after {
+        background: linear-gradient(180deg,var(--blue) 49%,transparent 43%);
+    }
+
+    .cityName {
+        margin-bottom: .5em;
+    }
+
+    #map {
+        margin-bottom: -.5em;
+    }
+
+    .fiveDayForecastText {
+        padding: 1em 0;
+        text-align: center;
+    }
+
+    .cardContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 100%;
+        height: 100%;
+    }
+
+    .dateIcon {
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    .icon {
+        max-width: 5em;
+        margin-right: -1.4em;
+    }
+
+    .dayText {
+        text-align: center;
+    }
+
+    .spanContainer {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: center;
+        padding: 3em 0em;
+    }
+
+    .stat {
+        display: flex;
+        margin: 1em auto;
+        width: 50%;
+        justify-content: space-between;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .topBar {
+        margin-bottom: 2.5em;
+    }
+
+    main {
+        padding: 0em 2em 3em;
+    }
+
+    .locationButton {
+        width: 80%;
+        transition: 150ms ease-in-out;
+    }
+
+    .removeCityButton {
+        width: 20%;
+        transition: 150ms ease-in-out;
+    }
+
+    .currentTime {
+        display: none;
+    }
+
+    .statContainer div {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .conditionImageInverted {
+        width: 100%;
+        margin-top: 0em;
+    }
+
+    #map {
+        min-height: 285px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    aside {
+        margin-bottom: -1em;
+    }
+
+    #map {
+        min-height: 320px;
+        margin-bottom: -1.3em;
+    }
+
+    .stat {
+        width: 80%;
     }
 }

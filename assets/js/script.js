@@ -39,6 +39,10 @@ var cardWind = $('cardWind');
 var cardHumidity = $('.cardHumidity');
 var coordinates = $('.coords');
 
+// Hide Cities Data Row
+var citiesData = $('.citiesData');
+if (cities.length === 0) citiesData.hide();
+
 // When User Clicks Search Button
 searchButton.on('click',function(event) {
     event.preventDefault();
@@ -67,6 +71,7 @@ searchButton.on('click',function(event) {
                 var buttonContainer = $('.buttonContainer');
                 buttonContainer.html('');
                 createButtons(uniqueCities);
+                citiesData.show();
                 searchInput.val('');
                 // Converting Temperature from Kelvin to Fahrenheit
                 var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
@@ -135,6 +140,7 @@ searchButton.on('click',function(event) {
     }
 })
 
+// Create Buttons Function
 function createButtons(uniqueCities){
     uniqueCities.forEach((city,index) => {
         var locationButton = $(`<div class="locationElement"><button class="locationButton" id="${index}" data-location="${city}">${city}</button><button class="removeCityButton" id="${index}">X</button></div>`);
@@ -144,6 +150,7 @@ function createButtons(uniqueCities){
     })
 }
 
+// Invoking Create Buttons Function on Page Load
 createButtons(uniqueCities);
 
 // When user clicks on Location Buttons
@@ -218,11 +225,13 @@ buttonContainer.on('click','.locationButton',function(event) {
     })
 })
 
+// Clear Cities Function
 clearCities.on('click',function() {
     localStorage.clear();
     location.reload(true);
 })
 
+// Remove City from DOM & Local Storage
 var removeCityButton = buttonContainer.find('.locationElement').find('.removeCityButton');
 buttonContainer.on('click','.removeCityButton',function(event){
     $(event.target).parent().remove();
@@ -230,4 +239,5 @@ buttonContainer.on('click','.removeCityButton',function(event){
     var cityToRemoveIndex = $(event.target).attr('id');
     cities.splice(cityToRemoveIndex,1);
     localStorage.setItem('Cities History',JSON.stringify(cities));
+    if (cities.length === 0) citiesData.hide();
 })

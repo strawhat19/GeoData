@@ -17,12 +17,16 @@
     <title>Weather App</title>
   </head>
 
+  <!-- Begin Body -->
   <body>
 
+    <!-- Header // Top Bar -->
     <header class="topBar">Weather App</header>
 
+    <!-- Main Content Area -->
     <main>
 
+      <!-- Left Side Bar -->
       <aside class="sidebar">
         <form action="" class="searchForm">
           <input type="search" name="search" id="search" placeholder="Enter City Name"></input>
@@ -34,6 +38,7 @@
         <div class="buttonContainer"></div>
       </aside>
 
+      <!-- Right Side Content -->
       <article class="rightSide">
         <div class="dashboard">
           <div class="textContainer">
@@ -53,12 +58,13 @@
               <div>Coordinates: <span class="coords"></span></div>
             </div>
           </div>
+          <!-- Where we Inject the Google Map from Google Map API -->
           <div id="map"></div>
         </div>
 
 
 
-
+        <!-- Begin 5 Day Forecast -->
         <div class="fiveDayForecast">
           <h1 class="fiveDayForecastText">5-Day Forecast</h1>
           <div class="cardContainer">
@@ -143,7 +149,7 @@
 
     </main>
 
-
+    <!-- Footer // Bottom Bar -->
     <footer class="bottomBar">By Rakib Ahmed</footer>
 
 
