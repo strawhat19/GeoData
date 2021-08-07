@@ -2,7 +2,7 @@
 ## Application Design
 Desktop                    |                    Mobile
 :-------------------------:|:-------------------------:
-![Weather App on Desktop](./assets/css/images/designs/WeatherAppFinale.png)  |  ![Weather App on Mobile](./assets/css/images/designs/WeatherAppMobile.png)
+![Weather App on Desktop](./assets/css/images/designs/WeatherAppFinaleRounded.png)  |  ![Weather App on Mobile](./assets/css/images/designs/WeatherAppMobile.png)
 
 ## Application Function
 Weather App
