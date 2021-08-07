@@ -435,7 +435,7 @@ span.condition::before {
     .stat {
         display: flex;
         margin: 1em auto;
-        width: 50%;
+        width: 80%;
         justify-content: space-between;
     }
 }
