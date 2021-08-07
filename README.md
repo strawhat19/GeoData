@@ -3,9 +3,9 @@
 Desktop                    |                    Mobile
 :-------------------------:|:-------------------------:
 ![Weather App on Desktop](./assets/css/images/designs/WeatherAppFinale.png)  |  ![Weather App on Mobile](./assets/css/images/designs/WeatherAppMobile.png)
-Weather App
 
 ## Application Function
+Weather App
 You can view the Weather anywhere in the world.
 
 ## Application Link
