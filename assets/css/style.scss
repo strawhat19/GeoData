@@ -312,6 +312,7 @@ span.condition::before {
     backdrop-filter: blur(10px);
     border: solid 3px #00c4ff;
     min-height: 145px;
+    opacity: 0;
 }
 
 .bottomBar {
