@@ -1,5 +1,8 @@
 // Weather App
-console.log(`Weather App`);
+let cityName = ``;
+let dynamicTimer = null;
+let cities = JSON.parse(localStorage.getItem(`Cities History`)) || [];
+let uniqueCities = [...new Set(cities)];
 
 const wind = $(`.wind`);
 const cardDate = $(`.date`);
@@ -12,6 +15,7 @@ const coordinates = $(`.coords`);
 const cardDayText = $(`.dayText`);
 const cityNameText = $(`.cityName`);
 const citiesData = $(`.citiesData`);
+const currentTime = $(`.currentTime`);
 const citiesList = $(`.locationList`);
 const clearCities = $(`.clearCities`);
 const temperature = $(`.temperature`);
@@ -21,20 +25,26 @@ const conditionDiv = $(`.conditionDiv`);
 const cardHumidity = $(`.cardHumidity`);
 const cardContainer = $(`.cardContainer`);
 const conditionText = $(`.conditionText`);
+const copyrightYear = $(`.copyrightYear`);
 const locationButtons = $(`.locationButton`);
 const buttonContainer = $(`.buttonContainer`);
 const cardTemperature = $(`.cardTemperature`);
 const openWeatherAPIKey = `ce5300e7acaa327ad655b8a21d5130d8`;
 const openWeatherAPIURL = `https://api.openweathermap.org/data/2.5`;
 const convertFromMSToMPH = (speedInMS) => Math.floor(speedInMS * 2.237);
+const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const browserTimezoneContinent = browserTimezone.split(`/`)[0].replace(/_/g, ` `);
+const browserTimezoneCityOrRegion = browserTimezone.split(`/`)[1].replace(/_/g, ` `);
 const removeCityButton = buttonContainer.find(`.locationElement`).find(`.removeCityButton`);
 const convertFromKelvinToFahrenheit = (tempInKelvin) => ((tempInKelvin - 273.15) * (9/5) + 32);
 
-let cityName = ``;
-let cities = JSON.parse(localStorage.getItem(`Cities History`)) || [];
-cities.splice(10);
-let uniqueCities = [...new Set(cities)];
-if (cities.length === 0) citiesData.hide();
+const setDynamicTimer = (timezone) => {
+    copyrightYear.html(moment().tz(timezone).format(`YYYY`));
+    if (dynamicTimer != null) clearInterval(dynamicTimer);
+    dynamicTimer = setInterval(async () => {
+        currentTime.html(moment().tz(timezone).format(`dddd, MMMM Do, h:mm:ss a`));
+    }, 1000);
+}
 
 const generateMap = (coordinates, type = `API`) => {
     let { latitude, longitude } = coordinates;
@@ -99,9 +109,8 @@ const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
 
     console.log(`One Call Data From Open Weather API`, oneCallFiveDayForecastData);
 
-    let currentTime = moment().tz(oneCallFiveDayForecastData.timezone).format(`dddd, MMMM Do YYYY, h:mm a`);
-    let currentTimeEl = $(`<span class="currentTime"> - ${currentTime}</span>`);
-    cityNameText.append(currentTimeEl);
+    let timezone = oneCallFiveDayForecastData.timezone;
+    setDynamicTimer(timezone);
     
     let firstDay = oneCallFiveDayForecastData.daily[0];
     let uvi = oneCallFiveDayForecastData.current.uvi;
@@ -181,7 +190,6 @@ const setCurrentWeatherDataFromLocationName = (currentWeatherData, cityName, sea
 
         if (searched == true) {
             cities.push(cityName);
-            cities.splice(10);
             let uniqueCities = [...new Set(cities)];
             localStorage.setItem(`Cities History`, JSON.stringify(uniqueCities));
             uniqueCities = JSON.parse(localStorage.getItem(`Cities History`));
@@ -198,15 +206,10 @@ const setCurrentWeatherDataFromLocationName = (currentWeatherData, cityName, sea
         let cityNameOfWeather = currentWeatherData.name;
         let tempInKelvin = currentWeatherData.main.temp;
         let countryCodeOfWeather = currentWeatherData.sys.country;
+        let coordinatesOfWeatherLocation = { latitude, longitude };
         let locationHumidity = `${currentWeatherData.main.humidity} %`;
         let tempInFahrenheit = convertFromKelvinToFahrenheit(tempInKelvin).toFixed(1);
         let locationWindSpeed = `${convertFromMSToMPH(currentWeatherData.wind.speed)} mph`;
-        
-        // let convertedLatToDirection = convertLatLonToDMSDirectionFromCoordinates(latitude, `lat`);
-        // let convertedLonToDirection = convertLatLonToDMSDirectionFromCoordinates(longitude, `lon`);
-        // let coordinatesText = convertedLatToDirection + `, ` + convertedLonToDirection;
-        let coordinatesOfWeatherLocation = { latitude, longitude };
-        // generateMap(coordinatesOfWeatherLocation);
 
         cityNameText.html(cityNameOfWeather + `, ` + countryCodeOfWeather);
         temperature.html(tempInFahrenheit + `° F`);
@@ -214,6 +217,7 @@ const setCurrentWeatherDataFromLocationName = (currentWeatherData, cityName, sea
         wind.html(locationWindSpeed);
         coordinates.html(Math.floor(latitude) + `, ` + Math.floor(longitude));
 
+        // generateMap(coordinatesOfWeatherLocation);
         getOneCallFiveDayForecastDataForCoordinates(coordinatesOfWeatherLocation);
     }
 
@@ -274,8 +278,10 @@ searchButton.on(`click`, (searchButtonClickEvent) => {
     }
 })
 
-// let initialCoordinatesForMap = { latitude: 30, longitude: 0 };
-// generateMap(initialCoordinatesForMap);
+const initializeWeatherApp = () => {
+    if (cities.length === 0) citiesData.hide();
+    getCurrentWeatherForLocation(browserTimezoneCityOrRegion);
+    createButtons(uniqueCities);
+}
 
-// Invoking Create Buttons Function on Page Load
-createButtons(uniqueCities);
+initializeWeatherApp();

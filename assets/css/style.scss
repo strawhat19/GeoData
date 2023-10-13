@@ -30,6 +30,7 @@ body {
 
 h1 {
     font-size: 1.8em;
+    margin-bottom: 0;
 }
 
 h2 {
@@ -188,6 +189,14 @@ article {
     grid-gap: 35px;
 }
 
+.cityNameCountryDateTime {
+    width: 100%;
+    display: flex;
+    grid-gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .textContainer {
     width: 100%;
 }
@@ -329,10 +338,17 @@ span.condition::before {
     align-items: center;
     font-weight: 600;
     position: fixed;
+    grid-gap: 5px;
     height: 2.5em;
     display: flex;
     width: 100%;
     bottom: 0;
+}
+
+.copyrightField {
+    font-size: 13px;
+    display: flex;
+    grid-gap: 5px;
 }
 
 .statText {
@@ -352,8 +368,8 @@ span.condition::before {
         transition: 150ms ease-in-out;
     }
 
-    .cityName {
-        margin-bottom: 1em;
+    .cityNameCountryDateTime {
+        padding-bottom: 15px;
     }
 
     .statContainer, .statContainer span, .stat, .stat span {
