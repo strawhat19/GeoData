@@ -4,29 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
-    <!-- Font Awesome Version 5 -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous"/>
-    <!-- Google Fonts: Open Sans -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet"/>
-     <!-- Site Icon -->
     <link rel="icon" href="./assets/css/images/Sun-Icon.svg" type="image/x-icon">
-    <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Weather App</title>
   </head>
-
-  <!-- Begin Body -->
   <body>
-
-    <!-- Header // Top Bar -->
     <header class="topBar">Weather App</header>
-
-    <!-- Main Content Area -->
     <main>
-
-      <!-- Left Side Bar -->
       <aside class="sidebar">
         <form action="" class="searchForm">
           <input type="search" name="search" id="search" placeholder="Enter City Name"></input>
@@ -37,8 +24,6 @@
         </div>
         <div class="buttonContainer"></div>
       </aside>
-
-      <!-- Right Side Content -->
       <article class="rightSide">
         <div class="dashboard">
           <div class="textContainer">
@@ -58,18 +43,15 @@
               <div>Coordinates: <span class="coords"></span></div>
             </div>
           </div>
-          <!-- Where we Inject the Google Map from Google Map API -->
           <div id="map"></div>
         </div>
-
-
-
-        <!-- Begin 5 Day Forecast -->
         <div class="fiveDayForecast">
           <h1 class="fiveDayForecastText">5-Day Forecast</h1>
           <div class="cardContainer">
             <div class="card cardStart">
-              <div class="dateIcon"><h4 class="date">Jan 1st</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+              <div class="dateIcon"><h4 class="date">Jan 1st</h4>
+                <img class="icon" src="./assets/css/images/Sun-Icon.svg" />
+              </div>
                 <h3 class="dayText">Monday</h3>
                 <div class="spanContainer">
                   <div class="stat">Temperature: 
@@ -84,7 +66,9 @@
                 </div>
             </div>
             <div class="card cardStart">
-              <div class="dateIcon"><h4 class="date">Jan 2nd</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+              <div class="dateIcon"><h4 class="date">Jan 2nd</h4>
+                <img class="icon" src="./assets/css/images/Sun-Icon.svg">
+              </div>
                 <h3 class="dayText">Teusday</h3>
                 <div class="spanContainer">
                   <div class="stat">Temperature: 
@@ -99,7 +83,9 @@
                 </div>
             </div>
             <div class="card cardStart">
-              <div class="dateIcon"><h4 class="date">Jan 3rd</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+              <div class="dateIcon"><h4 class="date">Jan 3rd</h4>
+                <img class="icon" src="./assets/css/images/Sun-Icon.svg">
+              </div>
                 <h3 class="dayText">Wednesday</h3>
                 <div class="spanContainer">
                   <div class="stat">Temperature: 
@@ -114,7 +100,9 @@
                 </div>
             </div>
             <div class="card cardStart">
-              <div class="dateIcon"><h4 class="date">Jan 4th</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+              <div class="dateIcon"><h4 class="date">Jan 4th</h4>
+                <img class="icon" src="./assets/css/images/Sun-Icon.svg">
+              </div>
                 <h3 class="dayText">Thursday</h3>
                 <div class="spanContainer">
                   <div class="stat">Temperature: 
@@ -129,7 +117,9 @@
                 </div>
             </div>
             <div class="card cardStart">
-              <div class="dateIcon"><h4 class="date">Jan 5th</h4><img class="icon" src="./assets/css/images/Sun-Icon.svg"></div>
+              <div class="dateIcon"><h4 class="date">Jan 5th</h4>
+                <img class="icon" src="./assets/css/images/Sun-Icon.svg">
+              </div>
                 <h3 class="dayText">Friday</h3>
                 <div class="spanContainer">
                   <div class="stat">Temperature: 
@@ -146,22 +136,11 @@
           </div>
         </div>
       </article>
-
     </main>
-
-    <!-- Footer // Bottom Bar -->
     <footer class="bottomBar">By Rakib Ahmed</footer>
-
-
- <!-- Begin Scripts -->
-      <!-- jQuery -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <!-- Moment.js -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-      <!-- Google Maps API -->
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS9k5V2rEyMVVqtgHpon-Ro8hRQAatBx8&callback=initmap"></script>
-      <!-- Custom Script -->
       <script src="./assets/js/script.js"></script>
-    <!-- End Scripts -->
   </body>
 </html>

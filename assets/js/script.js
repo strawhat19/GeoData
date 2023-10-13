@@ -1,55 +1,55 @@
 // Weather App
-console.log('Weather App!');
+console.log(`Weather App`);
 
-// Initializing First Map Screen
-function initmap(){
-    var options = {
+const generateMap = () => {
+    let options = {
         zoom: 1,
-        center: {lat:30,lng:0}
-    } // Map Options
-    var map = new google.maps.Map(document.getElementById('map'),options);
-} // Invoking Create Map Function using Google Maps API
-initmap();
+        center: { lat: 30, lng: 0 }
+    }
+    let map = new google.maps.Map(document.getElementById(`map`), options);
+    return map;
+}
 
-// Declaring Variables
-var apiKey = 'ce5300e7acaa327ad655b8a21d5130d8';
-var cityName = '';
-var searchInput = $('#search');
-var searchButton = $('.searchButton');
-var citiesList = $('.locationList');
-var clearCities = $('.clearCities');
-var buttonContainer = $('.buttonContainer');
-var cities = JSON.parse(localStorage.getItem("Cities History")) || [];
-cities.splice(10);
-var uniqueCities = [...new Set(cities)];
-var cityNameText = $('.cityName');
-var cardContainer = $('.cardContainer');
-var temperature = $('.temperature');
-var humidity = $('.humidity');
-var conditionDiv = $('.conditionDiv');
-var condition = $('.conditionImage');
-var conditionText = $('.conditionText');
-var wind = $('.wind');
-var uvIndex = $('.UV-Index');
-var cardDate = $('.date');
-var cardIcon = $('.icon');
-var cardDayText = $('.dayText');
-var cardTemperature = $('.cardTemperature');
-var cardWind = $('cardWind');
-var cardHumidity = $('.cardHumidity');
-var coordinates = $('.coords');
+generateMap();
+
+// UI
+const wind = $(`.wind`);
+const cardDate = $(`.date`);
+const cardIcon = $(`.icon`);
+const uvIndex = $(`.UV-Index`);
+const cardWind = $(`cardWind`);
+const humidity = $(`.humidity`);
+const searchInput = $(`#search`);
+const coordinates = $(`.coords`);
+const cardDayText = $(`.dayText`);
+const cityNameText = $(`.cityName`);
+const citiesData = $(`.citiesData`);
+const citiesList = $(`.locationList`);
+const clearCities = $(`.clearCities`);
+const temperature = $(`.temperature`);
+const condition = $(`.conditionImage`);
+const searchButton = $(`.searchButton`);
+const conditionDiv = $(`.conditionDiv`);
+const cardHumidity = $(`.cardHumidity`);
+const cardContainer = $(`.cardContainer`);
+const conditionText = $(`.conditionText`);
+const buttonContainer = $(`.buttonContainer`);
+const cardTemperature = $(`.cardTemperature`);
+const apiKey = `ce5300e7acaa327ad655b8a21d5130d8`;
+
+let cityName = ``;
+let cities = JSON.parse(localStorage.getItem(`Cities History`)).splice(10) || [];
+let uniqueCities = [...new Set(cities)];
 
 // Hide Cities Data Row
-var citiesData = $('.citiesData');
 if (cities.length === 0) citiesData.hide();
 
 // When User Clicks Search Button
-searchButton.on('click',function(event) {
-    event.preventDefault();
-    // console.log(newCities);
+searchButton.on(`click`, (searchButtonClickEvent) => {
+    searchButtonClickEvent.preventDefault();
     var searchInputValue = searchInput.val();
     if (!searchInputValue) {
-        alert('Please Enter Valid Location.');
+        alert(`Please Enter Valid Location.`);
         return;
     } else {
         var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInputValue}&appid=${apiKey}`;
@@ -58,21 +58,21 @@ searchButton.on('click',function(event) {
         .then(function(response) {
             return response.json();
         }).then(function(data) {
-            if (data.cod === '404') {
-                alert('City Not Found.');
+            if (data.cod === `404`) {
+                alert(`City Not Found.`);
                 return;
             } else {
                 cities.push(searchInputValue);
                 cities.splice(10);
                 var uniqueCities = [...new Set(cities)];
-                localStorage.setItem('Cities History', JSON.stringify(uniqueCities));
-                uniqueCities = JSON.parse(localStorage.getItem('Cities History'));
+                localStorage.setItem(`Cities History`, JSON.stringify(uniqueCities));
+                uniqueCities = JSON.parse(localStorage.getItem(`Cities History`));
                 uniqueCities = [...new Set(uniqueCities)];
-                var buttonContainer = $('.buttonContainer');
-                buttonContainer.html('');
+                var buttonContainer = $(`.buttonContainer`);
+                buttonContainer.html(``);
                 createButtons(uniqueCities);
                 citiesData.show();
-                searchInput.val('');
+                searchInput.val(``);
                 // Converting Temperature from Kelvin to Fahrenheit
                 var fahrenheit = Math.floor((data.main.temp - 273.15)* 1.8 + 32.00);
                 cityNameText.html(data.name + ', ' + data.sys.country);
