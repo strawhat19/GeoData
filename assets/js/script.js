@@ -26,7 +26,8 @@ const cardTemperature = $(`.cardTemperature`);
 const openWeatherAPIKey = `ce5300e7acaa327ad655b8a21d5130d8`;
 
 let cityName = ``;
-let cities = JSON.parse(localStorage.getItem(`Cities History`)).splice(10) || [];
+let cities = JSON.parse(localStorage.getItem(`Cities History`)) || [];
+cities.splice(10);
 let uniqueCities = [...new Set(cities)];
 if (cities.length === 0) citiesData.hide();
 
