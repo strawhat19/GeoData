@@ -95,20 +95,24 @@ const isValid = (item) => {
     }
 }
 
-const setFiveDayForecastData = (fiveDayForecastData) => {
-    let firstDay = fiveDayForecastData.daily[0];
-    let uvi = fiveDayForecastData.current.uvi;
-    let currentTime = moment.unix(fiveDayForecastData.current.dt).format(`dddd, MMMM Do YYYY, h:mm a`);
-    let currentTimeEl = $(`<span class="currentTime"> - ${currentTime} </span>`);
+const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
+
+    console.log(`One Call Data From Open Weather API`, oneCallFiveDayForecastData);
+
+    let currentTime = moment().tz(oneCallFiveDayForecastData.timezone).format(`dddd, MMMM Do YYYY, h:mm a`);
+    let currentTimeEl = $(`<span class="currentTime"> - ${currentTime}</span>`);
+    cityNameText.append(currentTimeEl);
+    
+    let firstDay = oneCallFiveDayForecastData.daily[0];
+    let uvi = oneCallFiveDayForecastData.current.uvi;
     let currentDaysCondition = firstDay.weather[0].main;
     
     uvIndex.html(uvi);
-    cityNameText.append(currentTimeEl);
     cardContainer.html(``);
     conditionText.html(currentDaysCondition);
 
     for (let i = 1; i < 6; i++) {
-        let thisDay = fiveDayForecastData.daily[i];
+        let thisDay = oneCallFiveDayForecastData.daily[i];
         let dateTime = thisDay.dt;
         let fullDates = moment.unix(dateTime).format(`MMMM Do`);
         let day = moment.unix(dateTime).format(`dddd`);
@@ -144,10 +148,10 @@ const setFiveDayForecastData = (fiveDayForecastData) => {
         cardContainer.append(foreCastCards);
     }
 
-    return fiveDayForecastData;
+    return oneCallFiveDayForecastData;
 }
 
-const getFiveDayForecastDataForCoordinates = async (coordinates) => {
+const getOneCallFiveDayForecastDataForCoordinates = async (coordinates) => {
     let { latitude, longitude } = coordinates;
     try {
         let openWeatherOneCallForLatLonURL = `${openWeatherAPIURL}/onecall?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPIKey}`;
@@ -155,7 +159,7 @@ const getFiveDayForecastDataForCoordinates = async (coordinates) => {
         if (openWeatherOneCallForLatLonResponse.ok == true) {
             let openWeatherOneCallForLatLonData = await openWeatherOneCallForLatLonResponse.json();
             if (isValid(openWeatherOneCallForLatLonData)) {
-                return setFiveDayForecastData(openWeatherOneCallForLatLonData);
+                return setOneCallFiveDayForecastData(openWeatherOneCallForLatLonData);
             }
         } else {
             console.log(`Error Fetching Weather Data for Coordinates`);
@@ -172,6 +176,8 @@ const setCurrentWeatherDataFromLocationName = (currentWeatherData, cityName, sea
         alert(`City Not Found.`);
         return;
     } else {
+
+        console.log(`Current Weather Data From Open Weather API`, currentWeatherData);
 
         if (searched == true) {
             cities.push(cityName);
@@ -208,20 +214,20 @@ const setCurrentWeatherDataFromLocationName = (currentWeatherData, cityName, sea
         wind.html(locationWindSpeed);
         coordinates.html(Math.floor(latitude) + `, ` + Math.floor(longitude));
 
-        getFiveDayForecastDataForCoordinates(coordinatesOfWeatherLocation);
+        getOneCallFiveDayForecastDataForCoordinates(coordinatesOfWeatherLocation);
     }
 
     return currentWeatherData;
 }
 
-const getCurrentWeatherForLocation = async (location) => {
+const getCurrentWeatherForLocation = async (location, searched) => {
     try {
         let openWeatherForCityNameURL = `${openWeatherAPIURL}/weather?q=${location}&appid=${openWeatherAPIKey}`;
         let openWeatherLocationNameResponse = await fetch(openWeatherForCityNameURL);
         if (openWeatherLocationNameResponse.ok == true) {
             let openWeatherLocationNameData = await openWeatherLocationNameResponse.json();
             if (isValid(openWeatherLocationNameData)) {
-                return setCurrentWeatherDataFromLocationName(openWeatherLocationNameData, location);
+                return setCurrentWeatherDataFromLocationName(openWeatherLocationNameData, location, searched);
             }
         } else {
             console.log(`Error Fetching Weather Data for City Name`);
@@ -238,25 +244,9 @@ clearCities.on(`click`, () => {
     location.reload(true);
 });
 
-searchButton.on(`click`, (searchButtonClickEvent) => {
-    searchButtonClickEvent.preventDefault();
-    let locationName = searchInput.val();
-    if (isValid(locationName) == false) {
-        alert(`Please Enter Valid Location.`);
-        return;
-    } else {
-        getCurrentWeatherForLocation(locationName);
-    }
-})
-
 buttonContainer.on(`click`, `.locationButton`, (event) => {
     let locationName = $(event.target).html();
-    if (isValid(locationName) == false) {
-        alert(`Please Enter Valid Location.`);
-        return;
-    } else {
-        getCurrentWeatherForLocation(locationName);
-    }
+    getCurrentWeatherForLocation(locationName, false);
 })
 
 buttonContainer.on(`click`, `.removeCityButton`, (event) => {
@@ -266,6 +256,22 @@ buttonContainer.on(`click`, `.removeCityButton`, (event) => {
     cities.splice(cityToRemoveIndex, 1);
     localStorage.setItem(`Cities History`, JSON.stringify(cities));
     if (cities.length === 0) citiesData.hide();
+})
+
+searchButton.on(`click`, (searchButtonClickEvent) => {
+    searchButtonClickEvent.preventDefault();
+    let locationName = searchInput.val();
+    if (isValid(locationName) == false) {
+        alert(`Please Enter Valid Location.`);
+        return;
+    } else {
+        if (locationName.length < 3) {
+            alert(`Please Enter Valid Location with more than 3 Characters.`);
+            return;
+        } else {
+            getCurrentWeatherForLocation(locationName);
+        }
+    }
 })
 
 // let initialCoordinatesForMap = { latitude: 30, longitude: 0 };
