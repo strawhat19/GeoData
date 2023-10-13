@@ -21,9 +21,14 @@ const conditionDiv = $(`.conditionDiv`);
 const cardHumidity = $(`.cardHumidity`);
 const cardContainer = $(`.cardContainer`);
 const conditionText = $(`.conditionText`);
+const locationButtons = $(`.locationButton`);
 const buttonContainer = $(`.buttonContainer`);
 const cardTemperature = $(`.cardTemperature`);
 const openWeatherAPIKey = `ce5300e7acaa327ad655b8a21d5130d8`;
+const openWeatherAPIURL = `https://api.openweathermap.org/data/2.5`;
+const convertFromMSToMPH = (speedInMS) => Math.floor(speedInMS * 2.237);
+const removeCityButton = buttonContainer.find(`.locationElement`).find(`.removeCityButton`);
+const convertFromKelvinToFahrenheit = (tempInKelvin) => ((tempInKelvin - 273.15) * (9/5) + 32);
 
 let cityName = ``;
 let cities = JSON.parse(localStorage.getItem(`Cities History`)) || [];
@@ -38,6 +43,28 @@ const generateMap = (coordinates, type = `API`) => {
         let map = new google.maps.Map(document.getElementById(`map`), options);
         return map;
     }
+}
+
+const createButtons = (uniqueCities) => {
+    uniqueCities.forEach((city,index) => {
+        let locationButton = $(`
+            <div class="locationElement">
+                <button class="locationButton" id="${index}" data-location="${city}">${city}</button>
+                <button class="removeCityButton" id="${index}">X</button>
+            </div>
+        `);
+        buttonContainer.append(locationButton);
+    })
+}
+
+const convertLatLonToDMSDirectionFromCoordinates = (coordinate, latOrLon) => {
+    const absoluteCoord = Math.abs(coordinate) || `--`;
+    const degrees = Math.floor(absoluteCoord) || `--`;
+    const minutesFloat = (absoluteCoord - degrees) * 60 || `--`;
+    const minutes = Math.floor(minutesFloat) || `--`;
+    const seconds = Math.round((minutesFloat - minutes) * 60) || `--`;
+    const direction = (latOrLon == `lat` ? (coordinate >= 0 ? `N` : `S`) : (coordinate >= 0 ? `E` : `W`)) || `--`;
+    return `${degrees}°${minutes}'${seconds}"${direction}`;
 }
 
 const isValid = (item) => {
@@ -68,96 +95,133 @@ const isValid = (item) => {
     }
 }
 
-const setCurrentWeatherDataFromCityName = (currentWeatherData, cityName) => {
+const setFiveDayForecastData = (fiveDayForecastData) => {
+    let firstDay = fiveDayForecastData.daily[0];
+    let uvi = fiveDayForecastData.current.uvi;
+    let currentTime = moment.unix(fiveDayForecastData.current.dt).format(`dddd, MMMM Do YYYY, h:mm a`);
+    let currentTimeEl = $(`<span class="currentTime"> - ${currentTime} </span>`);
+    let currentDaysCondition = firstDay.weather[0].main;
+    
+    uvIndex.html(uvi);
+    cityNameText.append(currentTimeEl);
+    cardContainer.html(``);
+    conditionText.html(currentDaysCondition);
+
+    for (let i = 1; i < 6; i++) {
+        let thisDay = fiveDayForecastData.daily[i];
+        let dateTime = thisDay.dt;
+        let fullDates = moment.unix(dateTime).format(`MMMM Do`);
+        let day = moment.unix(dateTime).format(`dddd`);
+        let icon = thisDay.weather[0].icon;
+        let mainIcon = firstDay.weather[0].icon;
+        let daysHumidity = `${thisDay.humidity} %`;
+        let daysWindSpeed = `${convertFromMSToMPH(thisDay.wind_speed)}`;
+        let daysMaxTemp = convertFromKelvinToFahrenheit(thisDay.temp.max);
+        let iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+        let mainIconLink = `https://openweathermap.org/img/wn/${mainIcon}@2x.png`;
+
+        condition.addClass(`conditionImageInverted`);
+        condition.attr(`src`, mainIconLink);
+
+        let foreCastCards = $(`
+            <div class="card">
+                <div class="dateIcon"><h4 class="date">${fullDates}</h4><img class="icon" src="${iconLink}"></div>
+                <h3 class="dayText">${day}</h3>
+                <div class="spanContainer">
+                    <div class="stat">Temperature: 
+                        <span class="cardTemperature">${Math.floor(daysMaxTemp)}° F</span>
+                    </div>
+                    <div class="stat">Wind Speed: 
+                        <span class="cardWind">${daysWindSpeed}</span>
+                    </div>
+                    <div class="stat">Humidity: 
+                        <span class="cardHumidity">${daysHumidity}</span>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        cardContainer.append(foreCastCards);
+    }
+
+    return fiveDayForecastData;
+}
+
+const getFiveDayForecastDataForCoordinates = async (coordinates) => {
+    let { latitude, longitude } = coordinates;
+    try {
+        let openWeatherOneCallForLatLonURL = `${openWeatherAPIURL}/onecall?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPIKey}`;
+        let openWeatherOneCallForLatLonResponse = await fetch(openWeatherOneCallForLatLonURL);
+        if (openWeatherOneCallForLatLonResponse.ok == true) {
+            let openWeatherOneCallForLatLonData = await openWeatherOneCallForLatLonResponse.json();
+            if (isValid(openWeatherOneCallForLatLonData)) {
+                return setFiveDayForecastData(openWeatherOneCallForLatLonData);
+            }
+        } else {
+            console.log(`Error Fetching Weather Data for Coordinates`);
+            return;
+        }
+    } catch (error) {
+        console.log(`Error Fetching Weather Data for Coordinates`, error.message, error);
+        return error.message;
+    }
+}
+
+const setCurrentWeatherDataFromLocationName = (currentWeatherData, cityName, searched = true) => {
     if (currentWeatherData.cod == 404) {
         alert(`City Not Found.`);
         return;
     } else {
-        cities.push(cityName);
-        cities.splice(10);
-        let uniqueCities = [...new Set(cities)];
-        localStorage.setItem(`Cities History`, JSON.stringify(uniqueCities));
-        uniqueCities = JSON.parse(localStorage.getItem(`Cities History`));
-        uniqueCities = [...new Set(uniqueCities)];
 
-        let buttonContainer = $(`.buttonContainer`);
-        buttonContainer.html(``);
-        createButtons(uniqueCities);
-        citiesData.show();
-        searchInput.val(``);
+        if (searched == true) {
+            cities.push(cityName);
+            cities.splice(10);
+            let uniqueCities = [...new Set(cities)];
+            localStorage.setItem(`Cities History`, JSON.stringify(uniqueCities));
+            uniqueCities = JSON.parse(localStorage.getItem(`Cities History`));
+            uniqueCities = [...new Set(uniqueCities)];
 
-        // Converting Temperature from Kelvin to Fahrenheit
-        let fahrenheit = Math.floor((currentWeatherData.main.temp - 273.15)* 1.8 + 32.00);
-        cityNameText.html(currentWeatherData.name + `, ` + currentWeatherData.sys.country);
-        temperature.html(fahrenheit + `° F`);
-        humidity.html(currentWeatherData.main.humidity);
-        wind.html(currentWeatherData.wind.speed);
-        coordinates.html(Math.floor(currentWeatherData.coord.lat) + `, ` + Math.floor(currentWeatherData.coord.lon));
+            buttonContainer.html(``);
+            createButtons(uniqueCities);
+            citiesData.show();
+            searchInput.val(``);
+        }
 
         let latitude = currentWeatherData.coord.lat;
         let longitude = currentWeatherData.coord.lon;
-        // let coordinatesOfWeatherLocation = { latitude, longitude };
+        let cityNameOfWeather = currentWeatherData.name;
+        let tempInKelvin = currentWeatherData.main.temp;
+        let countryCodeOfWeather = currentWeatherData.sys.country;
+        let locationHumidity = `${currentWeatherData.main.humidity} %`;
+        let tempInFahrenheit = convertFromKelvinToFahrenheit(tempInKelvin).toFixed(1);
+        let locationWindSpeed = `${convertFromMSToMPH(currentWeatherData.wind.speed)} mph`;
+        
+        // let convertedLatToDirection = convertLatLonToDMSDirectionFromCoordinates(latitude, `lat`);
+        // let convertedLonToDirection = convertLatLonToDMSDirectionFromCoordinates(longitude, `lon`);
+        // let coordinatesText = convertedLatToDirection + `, ` + convertedLonToDirection;
+        let coordinatesOfWeatherLocation = { latitude, longitude };
         // generateMap(coordinatesOfWeatherLocation);
 
-        // Fetching 2nd dataset with new Lat Lon and OneCall API
-        let openWeatherOneCallFromCoordinatesQuery = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPIKey}`;
-        fetch(openWeatherOneCallFromCoordinatesQuery).then(function(response) {
-            return response.json();
-        }).then(function(data) {
+        cityNameText.html(cityNameOfWeather + `, ` + countryCodeOfWeather);
+        temperature.html(tempInFahrenheit + `° F`);
+        humidity.html(locationHumidity);
+        wind.html(locationWindSpeed);
+        coordinates.html(Math.floor(latitude) + `, ` + Math.floor(longitude));
 
-            uvIndex.html(data.current.uvi);
-            let currentTime = moment.unix(data.current.dt).format(`dddd, MMMM Do YYYY, h:mm a`);
-            let currentTimeEl = $(`<span class="currentTime"> - ${currentTime} </span>`);
-            cityNameText.append(currentTimeEl);
-            cardContainer.html(``);
-            conditionText.html(data.daily[0].weather[0].main);
-
-            // 5 day forecast
-            for (let i = 1; i < 6; i++) {
-                let fullDates = moment.unix(data.daily[i].dt).format(`MMMM Do`);
-                let day = moment.unix(data.daily[i].dt).format(`dddd`);
-                let mainIcon = data.daily[0].weather[0].icon;
-                let mainIconLink = `https://openweathermap.org/img/wn/${mainIcon}@2x.png`;
-                condition.addClass(`conditionImageInverted`);
-                condition.attr(`src`, mainIconLink);
-                let icon = data.daily[i].weather[0].icon;
-                let iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-
-                // Creating Forecast Cards
-                let foreCastCards = $(`
-                    <div class="card">
-                        <div class="dateIcon"><h4 class="date">${fullDates}</h4><img class="icon" src="${iconLink}"></div>
-                        <h3 class="dayText">${day}</h3>
-                        <div class="spanContainer">
-                            <div class="stat">Temperature: 
-                                <span class="cardTemperature">${Math.floor((data.daily[i].temp.max - 273.15)* 1.8 + 32.00)}° F</span>
-                            </div>
-                            <div class="stat">Wind Speed: 
-                                <span class="cardWind">${data.daily[i].wind_speed}</span>
-                            </div>
-                            <div class="stat">Humidity: 
-                                <span class="cardHumidity">${data.daily[i].humidity}</span>
-                            </div>
-                        </div>
-                    </div>
-                `);
-
-                cardContainer.append(foreCastCards);
-            }
-        })
+        getFiveDayForecastDataForCoordinates(coordinatesOfWeatherLocation);
     }
 
     return currentWeatherData;
 }
 
-const getCurrentWeatherDataFromCityName = async (cityName) => {
+const getCurrentWeatherForLocation = async (location) => {
     try {
-        let openWeatherCityNameQuery = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${openWeatherAPIKey}`;
-        let openWeatherCityNameResponse = await fetch(openWeatherCityNameQuery);
-        if (openWeatherCityNameResponse.ok == true) {
-            let openWeatherCityNameData = await openWeatherCityNameResponse.json();
-            if (isValid(openWeatherCityNameData)) {
-                return setCurrentWeatherDataFromCityName(openWeatherCityNameData, cityName);
+        let openWeatherForCityNameURL = `${openWeatherAPIURL}/weather?q=${location}&appid=${openWeatherAPIKey}`;
+        let openWeatherLocationNameResponse = await fetch(openWeatherForCityNameURL);
+        if (openWeatherLocationNameResponse.ok == true) {
+            let openWeatherLocationNameData = await openWeatherLocationNameResponse.json();
+            if (isValid(openWeatherLocationNameData)) {
+                return setCurrentWeatherDataFromLocationName(openWeatherLocationNameData, location);
             }
         } else {
             console.log(`Error Fetching Weather Data for City Name`);
@@ -169,107 +233,37 @@ const getCurrentWeatherDataFromCityName = async (cityName) => {
     }
 } 
 
-searchButton.on(`click`, (searchButtonClickEvent) => {
-    searchButtonClickEvent.preventDefault();
-    let cityNameToCheckWeatherFor = searchInput.val();
-    if (isValid(cityNameToCheckWeatherFor) == false) {
-        alert(`Please Enter Valid Location.`);
-        return;
-    } else {
-        getCurrentWeatherDataFromCityName(cityNameToCheckWeatherFor);
-    }
-})
-
-const createButtons = (uniqueCities) => {
-    uniqueCities.forEach((city,index) => {
-        let locationButton = $(`
-            <div class="locationElement">
-                <button class="locationButton" id="${index}" data-location="${city}">${city}</button>
-                <button class="removeCityButton" id="${index}">X</button>
-            </div>
-        `);
-        let buttonContainer = $(`.buttonContainer`);
-        buttonContainer.append(locationButton);
-    })
-}
-
-let locationButtons = $(`.locationButton`);
-buttonContainer.on(`click`, `.locationButton`, (event) => {
-    let location = $(event.target).html();
-    let requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${openWeatherAPIKey}`;
-    // Repeating Fetch of 1st dataset
-    fetch(requestURL).then(function(response) {
-        return response.json();
-    }).then(function(data) {
-        let fahrenheit = Math.floor((data.main.temp - 273.15) * 1.8 + 32.00);
-        cityNameText.html(data.name + `, ` + data.sys.country);
-        temperature.html(fahrenheit + `° F`);
-        humidity.html(data.main.humidity);
-        wind.html(data.wind.speed);
-        coordinates.html(Math.floor(data.coord.lat) + `, ` + Math.floor(data.coord.lon));
-
-        let latitude = data.coord.lat;
-        let longitude = data.coord.lon;
-        // let coordinatesOfWeatherLocation = { latitude, longitude };
-        // generateMap(coordinatesOfWeatherLocation);
-
-        let openWeatherOneCallFromCoordinatesQuery = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPIKey}`;
-        fetch(openWeatherOneCallFromCoordinatesQuery).then((response) => {
-            return response.json();
-        }).then(function(data) {
-
-            uvIndex.html(data.current.uvi);
-            let currentTime = moment.unix(data.current.dt).format(`dddd, MMMM Do YYYY, h:mm a`);
-            let currentTimeEl = $(`<span class="currentTime"> - ${currentTime}</span>`);
-            cityNameText.append(currentTimeEl);
-            cardContainer.html(``);
-            conditionText.html(data.daily[0].weather[0].main);
-
-            // 5 day forecast
-            for (let i = 1; i < 6; i++) {
-                let fullDates = moment.unix(data.daily[i].dt).format(`MMMM Do`);
-                let day = moment.unix(data.daily[i].dt).format(`dddd`);
-                let mainIcon = data.daily[0].weather[0].icon;
-                let mainIconLink = `https://openweathermap.org/img/wn/${mainIcon}@2x.png`;
-                condition.addClass(`conditionImageInverted`);
-                condition.attr(`src`, mainIconLink);
-                let icon = data.daily[i].weather[0].icon;
-                let iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-                // Creating forecast cards
-                let foreCastCards = $(`
-                <div class="card">
-                  <div class="dateIcon"><h4 class="date">${fullDates}</h4><img class="icon" src="${iconLink}"></div>
-                    <h3 class="dayText">${day}</h3>
-                    <div class="spanContainer">
-                        <div class="stat">Temperature: 
-                            <span class="cardTemperature">${Math.floor((data.daily[i].temp.max - 273.15)* 1.8 + 32.00)}° F</span>
-                        </div>
-                        <div class="stat">Wind Speed: 
-                            <span class="cardWind">${data.daily[i].wind_speed}</span>
-                        </div>
-                        <div class="stat">Humidity: 
-                            <span class="cardHumidity">${data.daily[i].humidity}</span>
-                        </div>
-                    </div>
-                </div>`);
-                cardContainer.append(foreCastCards);
-            }
-        })
-    })
-})
-
 clearCities.on(`click`, () => {
     localStorage.clear();
     location.reload(true);
 });
 
-// Remove City from DOM & Local Storage
-let removeCityButton = buttonContainer.find(`.locationElement`).find(`.removeCityButton`);
+searchButton.on(`click`, (searchButtonClickEvent) => {
+    searchButtonClickEvent.preventDefault();
+    let locationName = searchInput.val();
+    if (isValid(locationName) == false) {
+        alert(`Please Enter Valid Location.`);
+        return;
+    } else {
+        getCurrentWeatherForLocation(locationName);
+    }
+})
+
+buttonContainer.on(`click`, `.locationButton`, (event) => {
+    let locationName = $(event.target).html();
+    if (isValid(locationName) == false) {
+        alert(`Please Enter Valid Location.`);
+        return;
+    } else {
+        getCurrentWeatherForLocation(locationName);
+    }
+})
+
 buttonContainer.on(`click`, `.removeCityButton`, (event) => {
     $(event.target).parent().remove();
     cities = JSON.parse(localStorage.getItem(`Cities History`));
     let cityToRemoveIndex = $(event.target).attr(`id`);
-    cities.splice(cityToRemoveIndex,1);
+    cities.splice(cityToRemoveIndex, 1);
     localStorage.setItem(`Cities History`, JSON.stringify(cities));
     if (cities.length === 0) citiesData.hide();
 })
