@@ -37,7 +37,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.7em;
+  font-size: 1.5em;
 }
 
 h4 {
@@ -54,7 +54,6 @@ span {
 }
 
 .topBar {
-  /* background: linear-gradient(103deg,var(--pink),var(--softViolet)); */
   background: var(--blue);
   height: 2.5em;
   margin-bottom: 4.5em;
@@ -125,6 +124,10 @@ button:hover {
   background: transparent;
 }
 
+.cityName {
+  text-transform: capitalize;
+}
+
 .searchButton {
   background: var(--blue);
 }
@@ -145,9 +148,12 @@ button:hover {
 }
 
 .removeCityButton {
-  background: var(--blue);
   width: 15%;
+  display: flex;
   margin: 1em 0 0;
+  align-items: center;
+  background: var(--blue);
+  justify-content: center;
 }
 
 :focus {
@@ -197,6 +203,7 @@ article {
   display: flex;
   grid-gap: 10px;
   align-items: center;
+  margin-bottom: 0.5rem;
   justify-content: flex-start;
 }
 
@@ -211,7 +218,7 @@ article {
   left: 0;
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, var(--blue) 49%, transparent 43%);
+  background: linear-gradient(90deg, var(--blue) 53%, transparent 43%);
   border-radius: 20px;
   z-index: -1;
 }
@@ -223,9 +230,14 @@ article {
   display: flex;
   flex-wrap: wrap;
 }
-
 .statContainer div {
-  width: 33%;
+  width: 33.3%;
+}
+.statContainer div.w100 {
+  width: 100%;
+}
+.statContainer div.w50 {
+  width: 50%;
 }
 
 .condition {
@@ -325,8 +337,9 @@ span.condition::before {
 }
 
 .map {
-  width: 100%;
+  width: 80%;
   height: 100%;
+  min-height: 210px;
 }
 .map iframe {
   width: 100%;
@@ -358,9 +371,53 @@ span.condition::before {
   grid-gap: 5px;
 }
 
+.addressField {
+  padding-top: 5px;
+}
+
 .statText {
+  font-size: 14px;
   font-weight: 700;
   color: var(--violet);
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: 300ms ease-in-out;
+}
+
+.buttonContainer {
+  max-height: 575px;
+  overflow-y: overlay;
+}
+
+.textOverflow {
+  max-width: 49%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0;
+}
+.textOverflow.tflow100 {
+  max-width: 100%;
+}
+.textOverflow.tflow95 {
+  max-width: 95%;
+}
+.textOverflow.tflow65 {
+  max-width: 65%;
+}
+.textOverflow.tflowShowDots {
+  overflow: visible;
+  position: relative;
+}
+.textOverflow.tflowShowDots::after {
+  content: "...";
+  position: absolute;
+  bottom: 10px;
+  right: -20px;
+  overflow: visible;
 }
 
 /* Mobile Responsiveness */
@@ -374,7 +431,8 @@ span.condition::before {
     transition: 150ms ease-in-out;
   }
   .cityNameCountryDateTime {
-    padding-bottom: 15px;
+    padding-bottom: 5px;
+    margin-bottom: 0;
   }
   .statContainer, .statContainer span, .stat, .stat span {
     font-size: 0.9em;
@@ -408,12 +466,10 @@ span.condition::before {
     flex-direction: column;
   }
   .dashboard::after {
-    background: linear-gradient(180deg, var(--blue) 49%, transparent 43%);
-  }
-  .cityName {
-    margin-bottom: 0.5em;
+    background: linear-gradient(180deg, var(--blue) 55%, transparent 43%);
   }
   .map {
+    width: 100%;
     margin-top: 65px;
     margin-bottom: -0.5em;
   }
@@ -470,9 +526,6 @@ span.condition::before {
     width: 20%;
     transition: 150ms ease-in-out;
   }
-  .currentTime {
-    display: none;
-  }
   .dateIcon {
     width: 80%;
   }
@@ -487,6 +540,9 @@ span.condition::before {
   }
   .map iframe {
     min-height: 285px;
+  }
+  .cityNameCountryDateTime {
+    justify-content: space-between;
   }
 }
 @media screen and (max-width: 320px) {

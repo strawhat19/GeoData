@@ -1,36 +1,42 @@
-// Weather App
+// GeoData API
+let locations = [];
 let cityName = ``;
 let dynamicTimer = null;
-let cities = JSON.parse(localStorage.getItem(`Cities History`)) || [];
-let uniqueCities = [...new Set(cities)];
+let uniqueLocations = [];
 
 const map = $(`.map`);
 const wind = $(`.wind`);
 const cardDate = $(`.date`);
+const region = $(`.region`);
 const cardIcon = $(`.icon`);
+const address = $(`.address`);
 const uvIndex = $(`.UV-Index`);
 const cardWind = $(`cardWind`);
 const humidity = $(`.humidity`);
 const searchInput = $(`#search`);
 const coordinates = $(`.coords`);
 const cardDayText = $(`.dayText`);
+const population = $(`.population`);
 const cityNameText = $(`.cityName`);
-const citiesData = $(`.citiesData`);
 const currentTime = $(`.currentTime`);
 const citiesList = $(`.locationList`);
-const clearCities = $(`.clearCities`);
 const temperature = $(`.temperature`);
 const condition = $(`.conditionImage`);
+const locationsData = $(`.citiesData`);
 const searchButton = $(`.searchButton`);
 const conditionDiv = $(`.conditionDiv`);
 const cardHumidity = $(`.cardHumidity`);
+const timezoneDBAPIKey = `5YKEXHYSRTXY`;
+const clearLocations = $(`.clearCities`);
 const cardContainer = $(`.cardContainer`);
 const conditionText = $(`.conditionText`);
 const copyrightYear = $(`.copyrightYear`);
+const locationsDatabaseName = `locations`;
 const locationButtons = $(`.locationButton`);
 const buttonContainer = $(`.buttonContainer`);
 const cardTemperature = $(`.cardTemperature`);
 const enableDefaultZoom = `!1m14!1m12!1m3!1d132`;
+const coordsDirectional = $(`.coordsDirectional`);
 const openWeatherAPIKey = `ce5300e7acaa327ad655b8a21d5130d8`;
 const googleMapsEmbedURL = `https://www.google.com/maps/embed`;
 const openWeatherAPIURL = `https://api.openweathermap.org/data/2.5`;
@@ -38,9 +44,46 @@ const convertFromMSToMPH = (speedInMS) => Math.floor(speedInMS * 2.237);
 const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const googleMapsEmbedOptions = `!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0`;
 const browserTimezoneContinent = browserTimezone.split(`/`)[0].replace(/_/g, ` `);
+const openStreetMapsNominatimAPIURL = `https://nominatim.openstreetmap.org/search`;
 const browserTimezoneCityOrRegion = browserTimezone.split(`/`)[1].replace(/_/g, ` `);
 const removeCityButton = buttonContainer.find(`.locationElement`).find(`.removeCityButton`);
 const convertFromKelvinToFahrenheit = (tempInKelvin) => ((tempInKelvin - 273.15) * (9/5) + 32);
+
+const capWords = (str) => {
+    return str.replace(/\b\w/g, (match) => {
+        return match.toUpperCase();
+    });
+}
+
+const setDynamicTimer = (timezone) => {
+    copyrightYear.html(moment().tz(timezone).format(`YYYY`));
+    if (dynamicTimer != null) clearInterval(dynamicTimer);
+    dynamicTimer = setInterval(async () => {
+        currentTime.html(moment().tz(timezone).format(window.innerWidth < 768 ? `ddd, MMM Do, h:mm:ss a` : `dddd, MMMM Do, h:mm:ss a`));
+    }, 1000);
+}
+
+const createButtons = (uniqueLocations) => {
+    uniqueLocations.reverse().slice(0, 10).forEach((city,index) => {
+        let locationButton = $(`
+            <div class="locationElement">
+                <button class="locationButton" id="${index}" data-location="${city}">${city}</button>
+                <button class="removeCityButton" id="${index}">X</button>
+            </div>
+        `);
+        buttonContainer.append(locationButton);
+    })
+}
+
+const convertLatLonToDMSDirectionFromCoordinates = (coordinate, latOrLon) => {
+    const absoluteCoord = Math.abs(coordinate);
+    const degrees = Math.floor(absoluteCoord);
+    const minutesFloat = (absoluteCoord - degrees) * 60;
+    const minutes = Math.floor(minutesFloat);
+    const seconds = Math.round((minutesFloat - minutes) * 60);
+    const direction = (latOrLon == `lat` ? (coordinate >= 0 ? `N` : `S`) : (coordinate >= 0 ? `E` : `W`));
+    return `${degrees}°${minutes}'${seconds}"${direction}`;
+}
 
 const googleMapZoomLevels = {
     world: ``,
@@ -53,35 +96,23 @@ const googleMapZoomLevels = {
     x300: enableDefaultZoom + `444444`,
 }
 
-const setDynamicTimer = (timezone) => {
-    copyrightYear.html(moment().tz(timezone).format(`YYYY`));
-    if (dynamicTimer != null) clearInterval(dynamicTimer);
-    dynamicTimer = setInterval(async () => {
-        currentTime.html(moment().tz(timezone).format(`dddd, MMMM Do, h:mm:ss a`));
-    }, 1000);
-}
-
-const createButtons = (uniqueCities) => {
-    uniqueCities.forEach((city,index) => {
-        let locationButton = $(`
-            <div class="locationElement">
-                <button class="locationButton" id="${index}" data-location="${city}">${city}</button>
-                <button class="removeCityButton" id="${index}">X</button>
-            </div>
-        `);
-        buttonContainer.append(locationButton);
-    })
-}
-
-const convertLatLonToDMSDirectionFromCoordinates = (coordinate, latOrLon) => {
-    const absoluteCoord = Math.abs(coordinate) || `--`;
-    const degrees = Math.floor(absoluteCoord) || `--`;
-    const minutesFloat = (absoluteCoord - degrees) * 60 || `--`;
-    const minutes = Math.floor(minutesFloat) || `--`;
-    const seconds = Math.round((minutesFloat - minutes) * 60) || `--`;
-    const direction = (latOrLon == `lat` ? (coordinate >= 0 ? `N` : `S`) : (coordinate >= 0 ? `E` : `W`)) || `--`;
-    return `${degrees}°${minutes}'${seconds}"${direction}`;
-}
+const toastrOptions =  {
+    debug: false,
+    onclick: null,
+    timeOut: `2000`,
+    newestOnTop: true,
+    progressBar: true,
+    closeButton: false,
+    showDuration: `300`,
+    showEasing: `swing`,
+    hideDuration: `1000`,
+    hideEasing: `linear`,
+    showMethod: `fadeIn`,
+    hideMethod: `fadeOut`,
+    extendedTimeOut: `1000`,
+    preventDuplicates: false,
+    positionClass: `toast-top-right`,
+};
 
 const isValid = (item) => {
     if (typeof item == `string`) {
@@ -96,7 +127,7 @@ const isValid = (item) => {
         } else {
             return true;
         }
-    } else if (typeof item == `object`) {
+    } else if (typeof item == `object` && item != undefined && item != null) {
         if (Object.keys(item).length == 0 || item == undefined || item == null) {
             return false;
         } else {
@@ -111,7 +142,7 @@ const isValid = (item) => {
     }
 }
 
-const generateMap = (coordinates) => {
+const generateMapFromCoordinates = (coordinates) => {
 
     let { latitude, longitude } = coordinates;
     let zoomLevel = googleMapZoomLevels.region;
@@ -136,12 +167,10 @@ const generateMap = (coordinates) => {
         }
     }
 
-    return generatedMap;
+    return {generatedMap, googleMapsIframeSource};
 }
 
 const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
-
-    console.log(`One Call Data From Open Weather API`, oneCallFiveDayForecastData);
 
     let timezone = oneCallFiveDayForecastData.timezone;
     setDynamicTimer(timezone);
@@ -194,14 +223,20 @@ const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
     return oneCallFiveDayForecastData;
 }
 
-const getOneCallFiveDayForecastDataForCoordinates = async (coordinates) => {
-    let { latitude, longitude } = coordinates;
+const getOneCallFiveDayForecastDataForCoordinates = async (coordinates, geoLocationData) => {
+    let { latitude, longitude, location } = coordinates;
     try {
         let openWeatherOneCallForLatLonURL = `${openWeatherAPIURL}/onecall?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPIKey}`;
         let openWeatherOneCallForLatLonResponse = await fetch(openWeatherOneCallForLatLonURL);
         if (openWeatherOneCallForLatLonResponse.ok == true) {
             let openWeatherOneCallForLatLonData = await openWeatherOneCallForLatLonResponse.json();
             if (isValid(openWeatherOneCallForLatLonData)) {
+                geoLocationData = {
+                    ...geoLocationData,
+                    oneCallLocation: location,
+                    openWeatherOneCallForLatLonData
+                }
+                console.log(`GeoData for ${geoLocationData.locationToAdd}`, geoLocationData);
                 return setOneCallFiveDayForecastData(openWeatherOneCallForLatLonData);
             }
         } else {
@@ -214,62 +249,151 @@ const getOneCallFiveDayForecastDataForCoordinates = async (coordinates) => {
     }
 }
 
-const setCurrentWeatherDataFromLocationName = (currentWeatherData, cityName, searched = true) => {
+const getLocationDateTimeDataFromCoordinates = async (coordinates) => {
+    try {
+        let { latitude, longitude } = coordinates;
+        let timezoneResponse = await fetch(`https://api.timezonedb.com/v2.1/get-time-zone?key=${timezoneDBAPIKey}&format=json&by=position&lat=${latitude}&lng=${longitude}`);
+        if (timezoneResponse.ok == true) {
+            let timezoneData = await timezoneResponse.json();
+            if (isValid(timezoneData)) {
+                return timezoneData;
+            }
+        } else {
+            console.log(`Error Fetching Timezone Data`, timezoneResponse);
+        }
+    } catch (error) {
+        console.log(`Error Fetching Timezone Data`, error);
+    }
+}
+
+const setCurrentWeatherDataFromLocation = async (currentWeatherData, location, searched = true, openStreetMapsData = null) => {
     if (currentWeatherData.cod == 404) {
         alert(`City Not Found.`);
         return;
     } else {
 
-        console.log(`Current Weather Data From Open Weather API`, currentWeatherData);
+        let latitude = currentWeatherData.coord.lat;
+        let longitude = currentWeatherData.coord.lon;
+        let tempInKelvin = currentWeatherData.main.temp;
+        let countryCodeOfWeather = currentWeatherData.sys.country;
+        let locationHumidity = `${currentWeatherData.main.humidity} %`;
+        let coordinatesOfWeatherLocation = { latitude, longitude, location };
+        let tempInFahrenheit = convertFromKelvinToFahrenheit(tempInKelvin).toFixed(1);
+        let generatedMapData = generateMapFromCoordinates(coordinatesOfWeatherLocation);
+        let locationWindSpeed = `${convertFromMSToMPH(currentWeatherData.wind.speed)} mph`;
+        let timezoneAndLocationData = await getLocationDateTimeDataFromCoordinates(coordinatesOfWeatherLocation);
+        openStreetMapsData = isValid(openStreetMapsData) ? openStreetMapsData : await getLocationDataFromOpenStreetMapsNominatimAPI(location, searched, false);
+        let locationToAdd = searched == true && isValid(searchInput.val()) ? searchInput.val() : typeof location == `string` ? location : isValid(openStreetMapsData[0].name) ? openStreetMapsData[0].name : location.location;
 
         if (searched == true) {
-            cities.push(cityName);
-            let uniqueCities = [...new Set(cities)];
-            localStorage.setItem(`Cities History`, JSON.stringify(uniqueCities));
-            uniqueCities = JSON.parse(localStorage.getItem(`Cities History`));
-            uniqueCities = [...new Set(uniqueCities)];
+            locations.push(locationToAdd);
+            uniqueLocations = [...new Set(locations)];
+            localStorage.setItem(locationsDatabaseName, JSON.stringify(uniqueLocations));
+            uniqueLocations = JSON.parse(localStorage.getItem(locationsDatabaseName));
+            uniqueLocations = [...new Set(uniqueLocations)];
 
             buttonContainer.html(``);
-            createButtons(uniqueCities);
-            citiesData.show();
+            createButtons(uniqueLocations);
+            locationsData.show();
             searchInput.val(``);
         }
 
-        let latitude = currentWeatherData.coord.lat;
-        let longitude = currentWeatherData.coord.lon;
-        let cityNameOfWeather = currentWeatherData.name;
-        let tempInKelvin = currentWeatherData.main.temp;
-        let countryCodeOfWeather = currentWeatherData.sys.country;
-        let coordinatesOfWeatherLocation = { latitude, longitude };
-        let locationHumidity = `${currentWeatherData.main.humidity} %`;
-        let tempInFahrenheit = convertFromKelvinToFahrenheit(tempInKelvin).toFixed(1);
-        let locationWindSpeed = `${convertFromMSToMPH(currentWeatherData.wind.speed)} mph`;
+        let populations = [];
+        openStreetMapsData.forEach(dataPoint => {
+            if (dataPoint?.extratags?.population) {
+                populations.push(parseFloat(dataPoint?.extratags?.population));
+            }
+        });
 
-        cityNameText.html(cityNameOfWeather + `, ` + countryCodeOfWeather);
+        if (populations.length > 0) {
+            populations = populations.sort((a, b) => b - a);
+            population.html(populations[0].toLocaleString());
+        } else {
+            population.html(`---`);
+        }
+
+        cityNameText.html(locationToAdd + `, ` + countryCodeOfWeather);
+        address.html(openStreetMapsData[0].display_name.split(`,`).slice(0, 2).join(`,`));
+        region.html(openStreetMapsData[0].display_name.split(`,`).slice(2, openStreetMapsData[0].display_name.split(`,`).length).join(`,`) || browserTimezoneContinent);
+
         temperature.html(tempInFahrenheit + `° F`);
         humidity.html(locationHumidity);
         wind.html(locationWindSpeed);
         coordinates.html(Math.floor(latitude) + `, ` + Math.floor(longitude));
+        coordsDirectional.html(convertLatLonToDMSDirectionFromCoordinates(latitude, `lat`) + `, ` + convertLatLonToDMSDirectionFromCoordinates(longitude, `lon`));
 
-        generateMap(coordinatesOfWeatherLocation);
-        getOneCallFiveDayForecastDataForCoordinates(coordinatesOfWeatherLocation);
+        let geoLocationData = {
+            location,
+            locationToAdd,
+            generatedMapData,
+            openStreetMapsData,
+            currentWeatherData,
+            timezoneAndLocationData,
+        }
+
+        getOneCallFiveDayForecastDataForCoordinates(coordinatesOfWeatherLocation, geoLocationData);
     }
 
     return currentWeatherData;
 }
 
-const getCurrentWeatherForLocation = async (location, searched) => {
+const getLocationDataFromOpenStreetMapsNominatimAPI = async (location, searched, firstFire = true) => {
     try {
-        let openWeatherForCityNameURL = `${openWeatherAPIURL}/weather?q=${location}&appid=${openWeatherAPIKey}`;
-        let openWeatherLocationNameResponse = await fetch(openWeatherForCityNameURL);
-        if (openWeatherLocationNameResponse.ok == true) {
-            let openWeatherLocationNameData = await openWeatherLocationNameResponse.json();
-            if (isValid(openWeatherLocationNameData)) {
-                return setCurrentWeatherDataFromLocationName(openWeatherLocationNameData, location, searched);
+        let locationQuery = location.includes(`,`) ? location.replace(/,/g, ``) : location;
+        locationQuery = location.split(` `).length > 1 ? capWords(location.replace(`?q=`, ``)).replace(/ /g, `%20`) : location;
+        let openStreetMapsNominatimLocationQuery = `${openStreetMapsNominatimAPIURL}?addressdetails=1&extratags=1&namedetails=1&q=${locationQuery}&format=json`;
+        let openStreetMapsNominatimLocationResponse = await fetch(openStreetMapsNominatimLocationQuery);
+        if (openStreetMapsNominatimLocationResponse.ok == true) {
+            let openStreetMapsNominatimLocationData = await openStreetMapsNominatimLocationResponse.json();
+            if (isValid(openStreetMapsNominatimLocationData)) {
+                let firstLocationFound = openStreetMapsNominatimLocationData[0];
+                let latitude = parseFloat(firstLocationFound.lat);
+                let longitude = parseFloat(firstLocationFound.lon);
+                let coordinates = { latitude, longitude, location };
+                if (firstFire == true) getCurrentWeatherForLocation(coordinates, searched, openStreetMapsNominatimLocationData);
+                setTimeout(() => {
+                    toastr.clear();
+                }, 2500);
+                return openStreetMapsNominatimLocationData;
+            } else {
+                setTimeout(() => {
+                    toastr.clear();
+                    toastr.error(`Couldn't find that location`, `Location Not Found`, toastrOptions);
+                }, 2500);
+                console.log(`Error Getting Location`, {openStreetMapsNominatimLocationResponse, openStreetMapsNominatimLocationData});
+                return;
             }
         } else {
-            console.log(`Error Fetching Weather Data for City Name`);
+            console.log(`Error Getting Location`, openStreetMapsNominatimLocationResponse);
             return;
+        }
+    } catch (error) {
+        console.log(`Error Getting Location`);
+        return;
+    }
+}
+
+const getCurrentWeatherForLocation = async (location, searched, openStreetMapsData = null) => {
+    try { 
+        let locationQuery = typeof location == `string` ? `?q=${location}` : `?lat=${location.latitude}&lon=${location.longitude}`;
+        let openWeatherForLocationURL = `${openWeatherAPIURL}/weather${locationQuery}&appid=${openWeatherAPIKey}`;
+        let openWeatherLocationNameResponse = await fetch(openWeatherForLocationURL);
+        if (openWeatherLocationNameResponse.ok == true) {
+            if (typeof location == `string`) toastr.info(`Getting GeoData for ${location}`, `Loading...`, toastrOptions);
+            let openWeatherLocationNameData = await openWeatherLocationNameResponse.json();
+            if (isValid(openWeatherLocationNameData)) {
+                setTimeout(() => {
+                    toastr.clear();
+                    toastr.success(`GeoData${typeof location == `string` ? ` for ${location}` : ``}`, `GeoData`, toastrOptions);
+                }, 1500);
+                return setCurrentWeatherDataFromLocation(openWeatherLocationNameData, location, searched, openStreetMapsData);
+            }
+        } else {
+            toastr.warning(`Checking if location is valid...`, `Validating...`, toastrOptions);
+            setTimeout(() => {
+                toastr.info(`Doing an extensive search...`, `Searching...`, toastrOptions);
+            }, 1000);
+            return getLocationDataFromOpenStreetMapsNominatimAPI(location, searched);
         }
     } catch (error) {
         console.log(`Error Fetching Weather Data for City Name`, error.message, error);
@@ -277,7 +401,7 @@ const getCurrentWeatherForLocation = async (location, searched) => {
     }
 } 
 
-clearCities.on(`click`, () => {
+clearLocations.on(`click`, () => {
     localStorage.clear();
     location.reload(true);
 });
@@ -289,11 +413,11 @@ buttonContainer.on(`click`, `.locationButton`, (event) => {
 
 buttonContainer.on(`click`, `.removeCityButton`, (event) => {
     $(event.target).parent().remove();
-    cities = JSON.parse(localStorage.getItem(`Cities History`));
+    locations = JSON.parse(localStorage.getItem(locationsDatabaseName));
     let cityToRemoveIndex = $(event.target).attr(`id`);
-    cities.splice(cityToRemoveIndex, 1);
-    localStorage.setItem(`Cities History`, JSON.stringify(cities));
-    if (cities.length === 0) citiesData.hide();
+    locations.splice(cityToRemoveIndex, 1);
+    localStorage.setItem(locationsDatabaseName, JSON.stringify(locations));
+    if (locations.length === 0) locationsData.hide();
 })
 
 searchButton.on(`click`, (searchButtonClickEvent) => {
@@ -313,9 +437,11 @@ searchButton.on(`click`, (searchButtonClickEvent) => {
 })
 
 const initializeWeatherApp = () => {
-    if (cities.length === 0) citiesData.hide();
+    locations = JSON.parse(localStorage.getItem(locationsDatabaseName)) || [];
+    uniqueLocations = [...new Set(locations)];
+    if (locations.length === 0) locationsData.hide();
     getCurrentWeatherForLocation(browserTimezoneCityOrRegion);
-    createButtons(uniqueCities);
+    createButtons(uniqueLocations);
 }
 
 initializeWeatherApp();

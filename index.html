@@ -6,19 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet"/>
     <link rel="icon" href="./assets/css/images/Sun-Icon.svg" type="image/x-icon">
     <link rel="stylesheet" href="./assets/css/style.css" />
-    <title>Weather App</title>
+    <title>GeoData API</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js" defer></script>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS9k5V2rEyMVVqtgHpon-Ro8hRQAatBx8&callback=generateMap" defer></script> -->
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS9k5V2rEyMVVqtgHpon-Ro8hRQAatBx8&callback=generateMapFromCoordinates" defer></script> -->
     <script src="./assets/js/script.js" defer></script>
   </head>
   <body>
-    <header class="topBar">Weather App</header>
+    <header class="topBar">GeoData API</header>
     <main>
       <aside class="sidebar">
         <form action="" class="searchForm">
@@ -33,23 +35,27 @@
       <article class="rightSide">
         <div class="dashboard">
           <div class="textContainer">
-            <h4>Weather Dashboard</h4>
+            <h4>GeoData Dashboard</h4>
             <div class="cityNameCountryDateTime">
-              <h1 class="cityName">City Name, Country</h1>
+              <h1 class="cityName textOverflow">City Name, Country</h1>
               <span class="currentTime">-:--:-- -M, -day, -/--/----</span>
             </div>
             <div class="statContainer">
-              <div>Temperature: <span class="temperature statText">--° F</span></div>
-              <div>Humidity: <span class="humidity statText">-- %</span></div>
+              <div class="addressField w100">Address / City / Town: <span class="address statText">--</span></div>
+              <div class="regionField w100">Region: <span class="region statText">--</span></div>
+              <div class="temperatureField">Temperature: <span class="temperature statText">--° F</span></div>
+              <div class="humidityField">Humidity: <span class="humidity statText">-- %</span></div>
               <div class="conditionDiv">Condition: 
                 <span class="condition">
                   <img class="conditionImage" src="./assets/css/images/Sun-Icon.svg">
                 </span>
                 <span class="conditionText statText"></span>
               </div>
-              <div>Wind: <span class="wind statText">-- mph</span></div>
-              <div>UV Index: <span class="UV-Index statText">UVI</span></div>
-              <div>Coordinates: <span class="coords statText">--°--'--</span></div>
+              <div class="windField">Wind: <span class="wind statText">-- mph</span></div>
+              <div class="uVField">UV Index: <span class="UV-Index statText">UVI</span></div>
+              <div class="coordinatesField">Coordinates: <span class="coords statText">--°--'--</span></div>
+              <div class="coordinatesField w50">Directional: <span class="coordsDirectional statText">--°--'--</span></div>
+              <div class="populationField w50">Population: <i class="fas fa-users"></i> <span class="population statText">---</span> People</div>
             </div>
           </div>
           <div id="map" class="map"></div>
