@@ -89,19 +89,34 @@ form {
 
 .citiesData {
     display: flex;
-    justify-content: space-between;
     grid-gap: 1em;
     align-items: center;
-}
-
-.listTitle {
-    margin-bottom: 0;
+    justify-content: space-between;
 }
 
 .citiesData button {
     background: var(--softViolet);
     border-color: var(--softViolet);
     margin: 0.1em 0;
+}
+
+.currentLocationButton {
+    background: rgba(40, 167, 69, .75);
+    border-color: rgba(40, 167, 69, .75);
+    i {
+        color: var(--blue);
+    }
+}
+
+.orSeparator {
+    display: flex;
+    padding: 5px 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.listTitle {
+    margin-bottom: 0;
 }
 
 input {
@@ -114,13 +129,15 @@ input {
 }
 
 button {
+    width: 100%;
+    color: #fff;
+    font-weight: 600;
+    padding: 0.3em 1em;
+    border-radius: 25px;
     background: transparent;
     border: 3px solid var(--blue);
-    border-radius: 25px;
-    padding: 0.3em 1em;
-    color: #fff;
     transition: 150ms ease-in-out;
-    width: 100%;
+    text-shadow: 0 0 2px rgba(0, 0, 0, .25);
 }
 
 button:hover {
@@ -391,7 +408,7 @@ span.condition::before {
 }
 
 .textOverflow {
-    max-width: 49%;
+    max-width: 45%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

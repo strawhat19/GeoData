@@ -37,6 +37,7 @@ const buttonContainer = $(`.buttonContainer`);
 const cardTemperature = $(`.cardTemperature`);
 const enableDefaultZoom = `!1m14!1m12!1m3!1d132`;
 const coordsDirectional = $(`.coordsDirectional`);
+const currentLocationButton = $(`.currentLocationButton`);
 const openWeatherAPIKey = `ce5300e7acaa327ad655b8a21d5130d8`;
 const googleMapsEmbedURL = `https://www.google.com/maps/embed`;
 const openWeatherAPIURL = `https://api.openweathermap.org/data/2.5`;
@@ -83,6 +84,19 @@ const convertLatLonToDMSDirectionFromCoordinates = (coordinate, latOrLon) => {
     const seconds = Math.round((minutesFloat - minutes) * 60);
     const direction = (latOrLon == `lat` ? (coordinate >= 0 ? `N` : `S`) : (coordinate >= 0 ? `E` : `W`));
     return `${degrees}°${minutes}'${seconds}"${direction}`;
+}
+
+const getCoordinatesFromCurrentLocation = () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            let coordinates = { latitude: position.coords.latitude, longitude: position.coords.longitude };
+            getCurrentWeatherForLocation(coordinates);
+        }, (error) => {
+            console.log(`Error obtaining geolocation:`, error.message);
+        });
+    } else {
+        console.log(`Geolocation is not supported by this browser.`);
+    }      
 }
 
 const googleMapZoomLevels = {
@@ -281,9 +295,10 @@ const setCurrentWeatherDataFromLocation = async (currentWeatherData, location, s
         let tempInFahrenheit = convertFromKelvinToFahrenheit(tempInKelvin).toFixed(1);
         let generatedMapData = generateMapFromCoordinates(coordinatesOfWeatherLocation);
         let locationWindSpeed = `${convertFromMSToMPH(currentWeatherData.wind.speed)} mph`;
+        let locationQuery = typeof location == `string` ? location : currentWeatherData.name;
         let timezoneAndLocationData = await getLocationDateTimeDataFromCoordinates(coordinatesOfWeatherLocation);
-        openStreetMapsData = isValid(openStreetMapsData) ? openStreetMapsData : await getLocationDataFromOpenStreetMapsNominatimAPI(location, searched, false);
-        let locationToAdd = searched == true && isValid(searchInput.val()) ? searchInput.val() : typeof location == `string` ? location : isValid(openStreetMapsData[0].name) ? openStreetMapsData[0].name : location.location;
+        openStreetMapsData = isValid(openStreetMapsData) ? openStreetMapsData : await getLocationDataFromOpenStreetMapsNominatimAPI(locationQuery, searched, false);
+        let locationToAdd = searched == true && isValid(searchInput.val()) ? searchInput.val() : typeof location == `string` ? location : openStreetMapsData[0]?.name && isValid(openStreetMapsData[0]?.name) ? openStreetMapsData[0]?.name : currentWeatherData.name;
 
         if (searched == true) {
             locations.push(locationToAdd);
@@ -399,7 +414,11 @@ const getCurrentWeatherForLocation = async (location, searched, openStreetMapsDa
         console.log(`Error Fetching Weather Data for City Name`, error.message, error);
         return error.message;
     }
-} 
+}
+
+currentLocationButton.on(`click`, () => {
+    getCoordinatesFromCurrentLocation();
+})
 
 clearLocations.on(`click`, () => {
     localStorage.clear();
