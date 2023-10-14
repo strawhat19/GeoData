@@ -13,11 +13,11 @@
 }
 
 :root {
-  --violet: #222639;
-  --softViolet: #bb99ff;
   --pink: #ee99ff;
   --blue: #1ab6e5;
   --green: #9FC490;
+  --violet: #222639;
+  --softViolet: #bb99ff;
 }
 
 body {
@@ -281,11 +281,11 @@ span.condition::before {
 }
 
 .card {
-  background: var(--softViolet);
-  border-radius: 25px;
   padding: 2em;
-  height: 440px;
   width: 240px;
+  height: 375px;
+  border-radius: 25px;
+  background: var(--softViolet);
 }
 
 .dateIcon {
@@ -324,16 +324,19 @@ span.condition::before {
   font-weight: 700;
 }
 
-#map {
-  height: 100%;
+.map {
   width: 100%;
-  border-radius: 25px;
+  height: 100%;
+}
+.map iframe {
+  width: 100%;
+  height: 100%;
   opacity: 0.85;
+  min-height: 210px;
+  border-radius: 25px;
+  border: solid 3px #00c4ff;
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
-  border: solid 3px #00c4ff;
-  min-height: 145px;
-  opacity: 0;
 }
 
 .bottomBar {
@@ -410,7 +413,8 @@ span.condition::before {
   .cityName {
     margin-bottom: 0.5em;
   }
-  #map {
+  .map {
+    margin-top: 65px;
     margin-bottom: -0.5em;
   }
   .fiveDayForecastText {
@@ -481,7 +485,7 @@ span.condition::before {
     width: 100%;
     margin-top: 0em;
   }
-  #map {
+  .map iframe {
     min-height: 285px;
   }
 }
@@ -489,9 +493,11 @@ span.condition::before {
   aside {
     margin-bottom: -1em;
   }
-  #map {
-    min-height: 320px;
+  .map {
     margin-bottom: -1.3em;
+  }
+  .map iframe {
+    min-height: 320px;
   }
   .stat {
     width: 90%;

@@ -4,6 +4,7 @@ let dynamicTimer = null;
 let cities = JSON.parse(localStorage.getItem(`Cities History`)) || [];
 let uniqueCities = [...new Set(cities)];
 
+const map = $(`.map`);
 const wind = $(`.wind`);
 const cardDate = $(`.date`);
 const cardIcon = $(`.icon`);
@@ -29,14 +30,28 @@ const copyrightYear = $(`.copyrightYear`);
 const locationButtons = $(`.locationButton`);
 const buttonContainer = $(`.buttonContainer`);
 const cardTemperature = $(`.cardTemperature`);
+const enableDefaultZoom = `!1m14!1m12!1m3!1d132`;
 const openWeatherAPIKey = `ce5300e7acaa327ad655b8a21d5130d8`;
+const googleMapsEmbedURL = `https://www.google.com/maps/embed`;
 const openWeatherAPIURL = `https://api.openweathermap.org/data/2.5`;
 const convertFromMSToMPH = (speedInMS) => Math.floor(speedInMS * 2.237);
 const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const googleMapsEmbedOptions = `!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0`;
 const browserTimezoneContinent = browserTimezone.split(`/`)[0].replace(/_/g, ` `);
 const browserTimezoneCityOrRegion = browserTimezone.split(`/`)[1].replace(/_/g, ` `);
 const removeCityButton = buttonContainer.find(`.locationElement`).find(`.removeCityButton`);
 const convertFromKelvinToFahrenheit = (tempInKelvin) => ((tempInKelvin - 273.15) * (9/5) + 32);
+
+const googleMapZoomLevels = {
+    world: ``,
+    street: enableDefaultZoom + ``,
+    neighborhood : enableDefaultZoom + `4`,
+    city: enableDefaultZoom + `44`,
+    region: enableDefaultZoom + `444`,
+    state: enableDefaultZoom + `4444`,
+    coast: enableDefaultZoom + `44444`,
+    x300: enableDefaultZoom + `444444`,
+}
 
 const setDynamicTimer = (timezone) => {
     copyrightYear.html(moment().tz(timezone).format(`YYYY`));
@@ -44,15 +59,6 @@ const setDynamicTimer = (timezone) => {
     dynamicTimer = setInterval(async () => {
         currentTime.html(moment().tz(timezone).format(`dddd, MMMM Do, h:mm:ss a`));
     }, 1000);
-}
-
-const generateMap = (coordinates, type = `API`) => {
-    let { latitude, longitude } = coordinates;
-    if (type == `API`) {
-        let options = { zoom: 1, center: { lat: latitude, lng: longitude } };
-        let map = new google.maps.Map(document.getElementById(`map`), options);
-        return map;
-    }
 }
 
 const createButtons = (uniqueCities) => {
@@ -103,6 +109,34 @@ const isValid = (item) => {
             return true;
         }
     }
+}
+
+const generateMap = (coordinates) => {
+
+    let { latitude, longitude } = coordinates;
+    let zoomLevel = googleMapZoomLevels.region;
+    let generatedMap = document.querySelector(`.generatedMap`);
+    let googleMapsIframeSource = `${googleMapsEmbedURL}?pb=${zoomLevel}!2d${longitude}!3d${latitude}${googleMapsEmbedOptions}`;
+    
+    // if (isValid(google)) generatedMap = new google.maps.Map(map, { zoom: 1, center: { lat: latitude, lng: longitude } });
+
+    if (generatedMap) {
+        generatedMap.src = googleMapsIframeSource;
+    } else {
+        generatedMap = document.createElement(`iframe`);
+        generatedMap.loading = `lazy`;
+        generatedMap.allowFullscreen = true;
+        generatedMap.src = googleMapsIframeSource;
+        generatedMap.classList.add(`generatedMap`);
+        generatedMap.referrerPolicy = `no-referrer-when-downgrade`;
+
+        if (map) {
+            if (map.children.length > 0) map.html(``);
+            map.append(generatedMap);
+        }
+    }
+
+    return generatedMap;
 }
 
 const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
@@ -217,7 +251,7 @@ const setCurrentWeatherDataFromLocationName = (currentWeatherData, cityName, sea
         wind.html(locationWindSpeed);
         coordinates.html(Math.floor(latitude) + `, ` + Math.floor(longitude));
 
-        // generateMap(coordinatesOfWeatherLocation);
+        generateMap(coordinatesOfWeatherLocation);
         getOneCallFiveDayForecastDataForCoordinates(coordinatesOfWeatherLocation);
     }
 
