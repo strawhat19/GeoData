@@ -1,12 +1,12 @@
-# Weather-App
+# GeoData API
 ## Application Design
 Desktop                    |                    Mobile
 :-------------------------:|:-------------------------:
-![Weather App on Desktop](./assets/css/images/designs/WeatherAppFinaleRounded.png)  |  ![Weather App on Mobile](./assets/css/images/designs/WeatherAppMobile.png)
+![GeoData API on Desktop](./assets/css/images/designs/GeoDataAPIDesktopNY.png)  |  ![GeoData API on Mobile](./assets/css/images/designs/GeoDataAPIMobileLoad.png)
 
 ## Application Function
-Weather App
-You can view the Weather anywhere in the world.
+GeoData API
+You can view the Relevant Geo Data such as Location, Timezone, Weather, etc. for any valid location in the world.
 
 ## Application Link
 https://strawhat19.github.io/Weather-App/

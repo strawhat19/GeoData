@@ -464,6 +464,12 @@ span.condition::before {
   }
 }
 @media screen and (max-width: 1550px) {
+  .map {
+    min-height: 232px;
+  }
+  .map iframe {
+    min-height: 232px;
+  }
   main {
     flex-direction: column;
     transition: 150ms ease-in-out;
@@ -483,6 +489,7 @@ span.condition::before {
 @media screen and (max-width: 1300px) {
   .dashboard {
     flex-direction: column;
+    background-position: -5px 50%;
   }
   .dashboard::after {
     background: linear-gradient(180deg, var(--blue) 55%, transparent 43%);
@@ -540,6 +547,7 @@ span.condition::before {
     margin-bottom: 2.5em;
   }
   main {
+    grid-gap: 20px;
     padding: 0em 2em 3em;
   }
   .locationButton {
@@ -553,6 +561,9 @@ span.condition::before {
   .dateIcon {
     width: 80%;
   }
+  .statContainer {
+    grid-gap: 0;
+  }
   .statContainer div {
     width: 100%;
     display: flex;
@@ -565,15 +576,31 @@ span.condition::before {
     width: 100%;
     margin-top: 0em;
   }
+  .dashboard {
+    background-position: 45% 50%;
+  }
+  .dashboard::after {
+    background: linear-gradient(180deg, var(--blue) 50%, transparent 43%);
+  }
+  .map {
+    top: -75px;
+    margin-top: 65px;
+    position: relative;
+    margin-bottom: -5.5em;
+  }
   .map iframe {
+    margin-top: 20px;
     min-height: 285px;
   }
   .cityNameCountryDateTime {
     justify-content: space-between;
   }
-}
-@media (max-width: 600px) {
   .geoDataWidgetTitleDetails {
+    display: none;
+  }
+}
+@media (max-width: 500px) {
+  .coordinatesField.basic {
     display: none;
   }
 }
