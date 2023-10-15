@@ -88,6 +88,7 @@ const convertLatLonToDMSDirectionFromCoordinates = (coordinate, latOrLon) => {
 
 const getCoordinatesFromCurrentLocation = () => {
     if (navigator.geolocation) {
+        toastr.info(`Getting Coordinates`, `Loading...`, { ...toastrOptions, timeOut: 4000 });
         navigator.geolocation.getCurrentPosition((position) => {
             let location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
             getCurrentWeatherForLocation(location);
@@ -250,7 +251,7 @@ const getOneCallFiveDayForecastDataForCoordinates = async (coordinates, geoLocat
                     oneCallLocation: location,
                     openWeatherOneCallForLatLonData
                 }
-                console.log(`GeoData for ${geoLocationData.locationToAdd}`, geoLocationData);
+                console.log(`GeoData for ${capWords(geoLocationData.locationToAdd)}`, geoLocationData);
                 return setOneCallFiveDayForecastData(openWeatherOneCallForLatLonData);
             }
         } else {
@@ -390,7 +391,7 @@ const getLocationDataFromOpenStreetMapsNominatimAPI = async (location, searched,
 
 const getCurrentWeatherForLocation = async (location, searched, openStreetMapsData = null) => {
     try {
-        if (typeof location == `string`) toastr.info(`Getting GeoData${typeof location == `string` ? ` for ${location}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Loading...`, toastrOptions);
+        if (typeof location == `string`) toastr.info(`Getting GeoData${typeof location == `string` ? ` for ${capWords(location)}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Loading...`, toastrOptions);
         let locationQuery = typeof location == `string` ? `?q=${location}` : `?lat=${location.latitude}&lon=${location.longitude}`;
         let openWeatherForLocationURL = `${openWeatherAPIURL}/weather${locationQuery}&appid=${openWeatherAPIKey}`;
         let openWeatherLocationNameResponse = await fetch(openWeatherForLocationURL);
@@ -398,16 +399,16 @@ const getCurrentWeatherForLocation = async (location, searched, openStreetMapsDa
             let openWeatherLocationNameData = await openWeatherLocationNameResponse.json();
             if (isValid(openWeatherLocationNameData)) {
                 setTimeout(() => {
-                    toastr.clear();
-                    toastr.success(`GeoData${typeof location == `string` ? ` for ${location}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Got GeoData`, toastrOptions);
-                }, 1500);
+                    // toastr.clear();
+                    toastr.success(`GeoData${typeof location == `string` ? ` for ${capWords(location)}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Got GeoData`, toastrOptions);
+                }, 500);
                 return setCurrentWeatherDataFromLocation(openWeatherLocationNameData, location, searched, openStreetMapsData);
             }
         } else {
             toastr.warning(`Checking if location is valid...`, `Validating...`, toastrOptions);
             setTimeout(() => {
-                toastr.info(`Doing an extensive search...`, `Searching...`, toastrOptions);
-            }, 1000);
+                toastr.info(`Doing an Extensive Search...`, `Searching...`, { ...toastrOptions, timeOut: 3000 });
+            }, 250);
             return getLocationDataFromOpenStreetMapsNominatimAPI(location, searched);
         }
     } catch (error) {
@@ -417,7 +418,6 @@ const getCurrentWeatherForLocation = async (location, searched, openStreetMapsDa
 }
 
 currentLocationButton.on(`click`, () => {
-    toastr.info(`Getting Coordinates`, `Loading...`, { ...toastrOptions, timeOut: 3500 });
     getCoordinatesFromCurrentLocation();
 })
 
