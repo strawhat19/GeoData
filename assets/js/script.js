@@ -60,7 +60,7 @@ const setDynamicTimer = (timezone) => {
     copyrightYear.html(moment().tz(timezone).format(`YYYY`));
     if (dynamicTimer != null) clearInterval(dynamicTimer);
     dynamicTimer = setInterval(async () => {
-        currentTime.html(moment().tz(timezone).format(window.innerWidth < 768 ? `ddd, MMM Do, h:mm:ss a` : `dddd, MMMM Do, h:mm:ss a`));
+        currentTime.html(moment().tz(timezone).format(window.innerWidth < 768 ? `ddd, MMM Do, h:mm a` : `dddd, MMMM Do, h:mm:ss a`));
     }, 1000);
 }
 
@@ -89,8 +89,8 @@ const convertLatLonToDMSDirectionFromCoordinates = (coordinate, latOrLon) => {
 const getCoordinatesFromCurrentLocation = () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
-            let coordinates = { latitude: position.coords.latitude, longitude: position.coords.longitude };
-            getCurrentWeatherForLocation(coordinates);
+            let location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
+            getCurrentWeatherForLocation(location);
         }, (error) => {
             console.log(`Error obtaining geolocation:`, error.message);
         });
@@ -205,9 +205,9 @@ const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
         let icon = thisDay.weather[0].icon;
         let mainIcon = firstDay.weather[0].icon;
         let daysHumidity = `${thisDay.humidity} %`;
-        let daysWindSpeed = `${convertFromMSToMPH(thisDay.wind_speed)}`;
         let daysMaxTemp = convertFromKelvinToFahrenheit(thisDay.temp.max);
         let iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+        let daysWindSpeed = `${convertFromMSToMPH(thisDay.wind_speed)} mph`;
         let mainIconLink = `https://openweathermap.org/img/wn/${mainIcon}@2x.png`;
 
         condition.addClass(`conditionImageInverted`);
@@ -221,7 +221,7 @@ const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
                     <div class="stat">Temperature: 
                         <span class="cardTemperature">${Math.floor(daysMaxTemp)}° F</span>
                     </div>
-                    <div class="stat">Wind Speed: 
+                    <div class="stat">Wind: 
                         <span class="cardWind">${daysWindSpeed}</span>
                     </div>
                     <div class="stat">Humidity: 
@@ -389,17 +389,17 @@ const getLocationDataFromOpenStreetMapsNominatimAPI = async (location, searched,
 }
 
 const getCurrentWeatherForLocation = async (location, searched, openStreetMapsData = null) => {
-    try { 
+    try {
+        if (typeof location == `string`) toastr.info(`Getting GeoData${typeof location == `string` ? ` for ${location}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Loading...`, toastrOptions);
         let locationQuery = typeof location == `string` ? `?q=${location}` : `?lat=${location.latitude}&lon=${location.longitude}`;
         let openWeatherForLocationURL = `${openWeatherAPIURL}/weather${locationQuery}&appid=${openWeatherAPIKey}`;
         let openWeatherLocationNameResponse = await fetch(openWeatherForLocationURL);
         if (openWeatherLocationNameResponse.ok == true) {
-            if (typeof location == `string`) toastr.info(`Getting GeoData for ${location}`, `Loading...`, toastrOptions);
             let openWeatherLocationNameData = await openWeatherLocationNameResponse.json();
             if (isValid(openWeatherLocationNameData)) {
                 setTimeout(() => {
                     toastr.clear();
-                    toastr.success(`GeoData${typeof location == `string` ? ` for ${location}` : ``}`, `GeoData`, toastrOptions);
+                    toastr.success(`GeoData${typeof location == `string` ? ` for ${location}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Got GeoData`, toastrOptions);
                 }, 1500);
                 return setCurrentWeatherDataFromLocation(openWeatherLocationNameData, location, searched, openStreetMapsData);
             }
@@ -417,6 +417,7 @@ const getCurrentWeatherForLocation = async (location, searched, openStreetMapsDa
 }
 
 currentLocationButton.on(`click`, () => {
+    toastr.info(`Getting Coordinates`, `Loading...`, { ...toastrOptions, timeOut: 3500 });
     getCoordinatesFromCurrentLocation();
 })
 

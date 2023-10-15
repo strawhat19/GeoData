@@ -43,7 +43,7 @@ h3 {
 }
 
 h4 {
-    font-weight: 200;
+    font-weight: 300;
     font-size: 0.9em;
     &.date {
         margin-bottom: 0;
@@ -101,10 +101,12 @@ form {
 }
 
 .currentLocationButton {
-    background: rgba(40, 167, 69, .75);
-    border-color: rgba(40, 167, 69, .75);
+    background: var(--primary);
+    border-color: var(--primary);
     i {
+        margin-right: 10px;
         color: var(--blue);
+        font-size: 18px;
     }
 }
 
@@ -545,6 +547,12 @@ span.condition::before {
         width: 90%;
         align-items: center;
         justify-content: space-between;
+    }
+}
+
+@media (max-height: 992px) {
+    .card {
+        height: 280px;
     }
 }
 
