@@ -7,8 +7,7 @@
 /* Source Sans Pro */
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Sans+Pro:ital,wght@0,200;0,300;1,200&display=swap");
 * {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -24,7 +23,7 @@
 body {
   background: var(--violet);
   color: white;
-  font-family: 'Poppins';
+  font-family: "Poppins";
 }
 
 h1 {
@@ -45,7 +44,6 @@ h4 {
   font-weight: 300;
   font-size: 0.9em;
 }
-
 h4.date {
   margin-bottom: 0;
 }
@@ -59,64 +57,38 @@ span {
   background: var(--blue);
   height: 2.5em;
   margin-bottom: 4.5em;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  justify-content: center;
+  align-items: center;
   font-weight: 600;
 }
 
 main {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  justify-content: space-between;
   padding: 0em 5em 3em;
   grid-gap: 3em;
 }
 
 form {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   grid-gap: 1em;
 }
 
 .locationList {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  grid-gap: .7em;
+  flex-direction: column;
+  grid-gap: 0.7em;
   padding-top: 1em;
   margin-bottom: 0;
 }
 
 .citiesData {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   grid-gap: 1em;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .citiesData button {
@@ -129,7 +101,6 @@ form {
   background: var(--primary);
   border-color: var(--primary);
 }
-
 .currentLocationButton i {
   margin-right: 10px;
   color: var(--blue);
@@ -137,16 +108,10 @@ form {
 }
 
 .orSeparator {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   padding: 5px 0;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .listTitle {
@@ -170,7 +135,6 @@ button {
   border-radius: 25px;
   background: transparent;
   border: 3px solid var(--blue);
-  -webkit-transition: 150ms ease-in-out;
   transition: 150ms ease-in-out;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
 }
@@ -188,15 +152,9 @@ button:hover {
 }
 
 .locationElement {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  justify-content: space-between;
+  align-items: center;
   grid-gap: 1em;
 }
 
@@ -210,32 +168,18 @@ button:hover {
 
 .removeCityButton {
   width: 15%;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   margin: 1em 0 0;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  align-items: center;
   background: var(--blue);
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  justify-content: center;
 }
 
 :focus {
   outline: none !important;
 }
 
-::-webkit-input-placeholder {
-  color: #fff;
-}
-
-:-ms-input-placeholder {
-  color: #fff;
-}
-
-::-ms-input-placeholder {
+::-moz-placeholder {
   color: #fff;
 }
 
@@ -248,17 +192,10 @@ aside {
 }
 
 article {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   width: 75%;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  justify-content: space-between;
 }
 
 .rightSide h2 {
@@ -276,25 +213,17 @@ article {
           backdrop-filter: blur(2px);
   position: relative;
   z-index: 1;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   grid-gap: 35px;
 }
 
 .cityNameCountryDateTime {
   width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   grid-gap: 10px;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin-bottom: .5rem;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  justify-content: flex-start;
 }
 
 .textContainer {
@@ -302,13 +231,12 @@ article {
 }
 
 .dashboard::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background: -webkit-gradient(linear, left top, right top, color-stop(53%, var(--blue)), color-stop(43%, transparent));
   background: linear-gradient(90deg, var(--blue) 53%, transparent 43%);
   border-radius: 20px;
   z-index: -1;
@@ -318,21 +246,15 @@ article {
   width: 100%;
   padding: 0.3em 0;
   grid-gap: 1em 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-wrap: wrap;
 }
-
 .statContainer div {
   width: 33.3%;
 }
-
 .statContainer div.w100 {
   width: 100%;
 }
-
 .statContainer div.w50 {
   width: 50%;
 }
@@ -351,11 +273,11 @@ article {
 }
 
 .conditionText {
-  padding: 0 .3em;
+  padding: 0 0.3em;
 }
 
 span.condition::before {
-  content: '';
+  content: "";
   top: 0;
   width: 100%;
   z-index: -1;
@@ -367,35 +289,25 @@ span.condition::before {
 }
 
 .conditionImageInverted {
-  -webkit-filter: invert(1) brightness(1.3);
-          filter: invert(1) brightness(1.3);
+  filter: invert(1) brightness(1.3);
   max-width: 25px;
   left: -1px;
   top: 1px;
 }
 
 .fiveDayForecast {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
 }
 
 .fiveDayForecastText {
-  padding: .5em 0;
+  padding: 0.5em 0;
   margin-bottom: 0;
 }
 
 .cardContainer {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  justify-content: space-between;
   grid-gap: 1em;
 }
 
@@ -408,53 +320,34 @@ span.condition::before {
 }
 
 .dateIcon {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   padding-bottom: 10px;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .cardStart .icon {
-  -webkit-filter: none;
-          filter: none;
+  filter: none;
   width: 20%;
 }
 
 .icon {
   width: 30%;
-  -webkit-filter: invert(1) brightness(1.3);
-          filter: invert(1) brightness(1.3);
+  filter: invert(1) brightness(1.3);
 }
 
 .spanContainer {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   height: 100%;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  justify-content: space-between;
   padding: 3em 0em;
 }
 
 .stat {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   width: 100%;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  justify-content: space-between;
 }
 
 .stat span {
@@ -467,7 +360,6 @@ span.condition::before {
   height: 100%;
   min-height: 210px;
 }
-
 .map iframe {
   width: 100%;
   height: 100%;
@@ -481,18 +373,12 @@ span.condition::before {
 
 .bottomBar {
   background: var(--blue);
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  justify-content: center;
+  align-items: center;
   font-weight: 600;
   position: fixed;
   grid-gap: 5px;
   height: 2.5em;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   width: 100%;
   bottom: 0;
@@ -500,8 +386,6 @@ span.condition::before {
 
 .copyrightField {
   font-size: 13px;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   grid-gap: 5px;
 }
@@ -519,7 +403,6 @@ span.condition::before {
 .hidden {
   opacity: 0;
   pointer-events: none;
-  -webkit-transition: 300ms ease-in-out;
   transition: 300ms ease-in-out;
 }
 
@@ -535,24 +418,19 @@ span.condition::before {
   overflow: hidden;
   margin: 0;
 }
-
 .textOverflow.tflow100 {
   max-width: 100%;
 }
-
 .textOverflow.tflow95 {
   max-width: 95%;
 }
-
 .textOverflow.tflow65 {
   max-width: 65%;
 }
-
 .textOverflow.tflowShowDots {
   overflow: visible;
   position: relative;
 }
-
 .textOverflow.tflowShowDots::after {
   content: "...";
   position: absolute;
@@ -565,12 +443,10 @@ span.condition::before {
 @media screen and (max-width: 1679px) {
   aside {
     width: 21%;
-    -webkit-transition: 150ms ease-in-out;
     transition: 150ms ease-in-out;
   }
   article {
     width: 76%;
-    -webkit-transition: 150ms ease-in-out;
     transition: 150ms ease-in-out;
   }
   .cityNameCountryDateTime {
@@ -578,68 +454,51 @@ span.condition::before {
     margin-bottom: 0;
   }
   .statContainer, .statContainer span, .stat, .stat span {
-    font-size: .9em;
+    font-size: 0.9em;
   }
   h1, h2, h3 {
     font-size: 1.37em;
   }
   .conditionImageInverted {
-    margin-top: -.3em;
+    margin-top: -0.3em;
   }
 }
-
 @media screen and (max-width: 1550px) {
   main {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    -webkit-transition: 150ms ease-in-out;
+    flex-direction: column;
     transition: 150ms ease-in-out;
   }
   aside {
     width: 100%;
-    -webkit-transition: 150ms ease-in-out;
     transition: 150ms ease-in-out;
   }
   article {
     width: 100%;
-    -webkit-transition: 150ms ease-in-out;
     transition: 150ms ease-in-out;
   }
   .bottomBar {
     position: static;
   }
 }
-
 @media screen and (max-width: 1300px) {
   .dashboard {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
+    flex-direction: column;
   }
   .dashboard::after {
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(55%, var(--blue)), color-stop(43%, transparent));
     background: linear-gradient(180deg, var(--blue) 55%, transparent 43%);
   }
   .map {
     width: 100%;
     margin-top: 65px;
-    margin-bottom: -.5em;
+    margin-bottom: -0.5em;
   }
   .fiveDayForecastText {
     padding: 1em 0;
     text-align: center;
   }
   .cardContainer {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    flex-direction: column;
+    align-items: center;
   }
   .card {
     width: 100%;
@@ -657,40 +516,25 @@ span.condition::before {
     text-align: center;
   }
   .spanContainer {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
+    flex-direction: column;
     height: 100%;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
+    justify-content: center;
     padding: 3em 0em;
   }
   .stat {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
     margin: 1em auto;
     width: 90%;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
+    align-items: center;
+    justify-content: space-between;
   }
 }
-
 @media (max-height: 992px) {
   .card {
     height: 280px;
   }
 }
-
 @media screen and (max-width: 768px) {
   .topBar {
     margin-bottom: 2.5em;
@@ -700,12 +544,10 @@ span.condition::before {
   }
   .locationButton {
     width: 80%;
-    -webkit-transition: 150ms ease-in-out;
     transition: 150ms ease-in-out;
   }
   .removeCityButton {
     width: 20%;
-    -webkit-transition: 150ms ease-in-out;
     transition: 150ms ease-in-out;
   }
   .dateIcon {
@@ -713,12 +555,11 @@ span.condition::before {
   }
   .statContainer div {
     width: 100%;
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
+    justify-content: space-between;
+  }
+  .statContainer div.w50 {
+    width: 100%;
   }
   .conditionImageInverted {
     width: 100%;
@@ -728,12 +569,14 @@ span.condition::before {
     min-height: 285px;
   }
   .cityNameCountryDateTime {
-    -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
+    justify-content: space-between;
   }
 }
-
+@media (max-width: 600px) {
+  .geoDataWidgetTitleDetails {
+    display: none;
+  }
+}
 @media screen and (max-width: 320px) {
   aside {
     margin-bottom: -1em;
@@ -747,5 +590,4 @@ span.condition::before {
   .stat {
     width: 90%;
   }
-}
-/*# sourceMappingURL=style.css.map */
+}/*# sourceMappingURL=style.css.map */

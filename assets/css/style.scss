@@ -583,6 +583,9 @@ span.condition::before {
         width: 100%;
         display: flex;
         justify-content: space-between;
+        &.w50 {
+            width: 100%;
+        }
     }
 
     .conditionImageInverted {
@@ -598,6 +601,12 @@ span.condition::before {
 
     .cityNameCountryDateTime {
         justify-content: space-between;
+    }
+}
+
+@media (max-width: 600px) {
+    .geoDataWidgetTitleDetails {
+        display: none;
     }
 }
 

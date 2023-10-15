@@ -56,11 +56,32 @@ const capWords = (str) => {
     });
 }
 
+const momentTimezoneFormats = {
+    smallDateTime: `ddd, M/D, h:mm a`,
+    extraSmallDateTime: `M/D, h:mm:ss a`,
+    mediumDateTime: `ddd, MMM Do, h:mm a`,
+    fullDateTime: `dddd, MMMM Do, h:mm:ss a`,
+}
+
 const setDynamicTimer = (timezone) => {
     copyrightYear.html(moment().tz(timezone).format(`YYYY`));
     if (dynamicTimer != null) clearInterval(dynamicTimer);
     dynamicTimer = setInterval(async () => {
-        currentTime.html(moment().tz(timezone).format(window.innerWidth < 768 ? `ddd, MMM Do, h:mm a` : `dddd, MMMM Do, h:mm:ss a`));
+        let format;
+        if (window.innerWidth < 768) {
+            if (window.innerWidth < 500) {
+                if (window.innerWidth < 455) {
+                    format = momentTimezoneFormats.extraSmallDateTime;
+                } else {
+                    format = momentTimezoneFormats.smallDateTime;
+                }
+            } else {
+                format = momentTimezoneFormats.mediumDateTime;
+            }
+        } else {
+            format = momentTimezoneFormats.fullDateTime;
+        }
+        currentTime.html(moment().tz(timezone).format(format));
     }, 1000);
 }
 
