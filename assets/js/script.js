@@ -95,7 +95,7 @@ const setDynamicTimer = (timezone) => {
 }
 
 const createButtons = (uniqueLocations) => {
-    uniqueLocations.reverse().slice(0, 10).forEach((city,index) => {
+    uniqueLocations.reverse().forEach((city,index) => {
         let locationButton = $(`
             <div class="locationElement">
                 <button class="locationButton" id="${index}" data-location="${city}">${city}</button>
@@ -104,7 +104,7 @@ const createButtons = (uniqueLocations) => {
         `);
         buttonContainer.append(locationButton);
     })
-    checkOverflow(buttonContainer);
+    if (uniqueLocations.length >= 9) checkOverflow(buttonContainer);
 }
 
 const convertLatLonToDMSDirectionFromCoordinates = (coordinate, latOrLon) => {
@@ -468,7 +468,7 @@ buttonContainer.on(`click`, `.removeCityButton`, (event) => {
     locations.splice(cityToRemoveIndex, 1);
     localStorage.setItem(locationsDatabaseName, JSON.stringify(locations));
     if (locations.length === 0) locationsData.hide();
-    checkOverflow(buttonContainer);
+    if (uniqueLocations.length >= 9) checkOverflow(buttonContainer);
 })
 
 searchButton.on(`click`, (searchButtonClickEvent) => {
