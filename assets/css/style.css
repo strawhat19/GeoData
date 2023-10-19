@@ -17,7 +17,9 @@
   --blue: #1ab6e5;
   --green: #9FC490;
   --violet: #222639;
+  --borderRadius: 25px;
   --softViolet: #bb99ff;
+  --transition: 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
 }
 
 body {
@@ -64,16 +66,18 @@ span {
 }
 
 main {
+  padding: 0;
+  width: 95%;
   display: flex;
-  justify-content: space-between;
-  padding: 0em 5em 3em;
   grid-gap: 3em;
+  margin: 0 auto;
+  justify-content: space-between;
 }
 
 form {
   display: flex;
-  flex-direction: column;
   grid-gap: 1em;
+  flex-direction: column;
 }
 
 .locationList {
@@ -98,12 +102,12 @@ form {
 }
 
 .currentLocationButton {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--blue);
+  border-color: var(--blue);
 }
 .currentLocationButton i {
+  color: var(--softViolet);
   margin-right: 10px;
-  color: var(--blue);
   font-size: 18px;
 }
 
@@ -121,7 +125,7 @@ form {
 input {
   background: transparent;
   border: 3px solid var(--blue);
-  border-radius: 25px;
+  border-radius: var(--borderRadius);
   padding: 0.5em 1em;
   color: #fff;
   text-transform: capitalize;
@@ -132,7 +136,7 @@ button {
   color: #fff;
   font-weight: 600;
   padding: 0.3em 1em;
-  border-radius: 25px;
+  border-radius: var(--borderRadius);
   background: transparent;
   border: 3px solid var(--blue);
   transition: 150ms ease-in-out;
@@ -159,17 +163,15 @@ button:hover {
 }
 
 .locationButton {
+  width: 85%;
   background: var(--pink);
   border-color: var(--pink);
   text-transform: capitalize;
-  margin: 1em 0 0;
-  width: 85%;
 }
 
 .removeCityButton {
   width: 15%;
   display: flex;
-  margin: 1em 0 0;
   align-items: center;
   background: var(--blue);
   justify-content: center;
@@ -208,7 +210,7 @@ article {
   background-position: 12em 50%;
   border: 3px solid var(--blue);
   padding: 2em;
-  border-radius: 25px;
+  border-radius: var(--borderRadius);
   -webkit-backdrop-filter: blur(2px);
           backdrop-filter: blur(2px);
   position: relative;
@@ -238,7 +240,7 @@ article {
   height: 100%;
   width: 100%;
   background: linear-gradient(90deg, var(--blue) 53%, transparent 43%);
-  border-radius: 20px;
+  border-radius: calc(var(--borderRadius) - 5px);
   z-index: -1;
 }
 
@@ -314,8 +316,8 @@ span.condition::before {
 .card {
   padding: 2em;
   width: 240px;
-  height: 375px;
-  border-radius: 25px;
+  height: 100%;
+  border-radius: var(--borderRadius);
   background: var(--softViolet);
 }
 
@@ -365,7 +367,7 @@ span.condition::before {
   height: 100%;
   opacity: 0.85;
   min-height: 210px;
-  border-radius: 25px;
+  border-radius: var(--borderRadius);
   border: solid 3px #00c4ff;
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
@@ -407,8 +409,11 @@ span.condition::before {
 }
 
 .buttonContainer {
-  max-height: 575px;
-  overflow-y: overlay;
+  display: flex;
+  grid-gap: 10px;
+  max-height: 445px;
+  margin: 10px 0 0 0;
+  flex-direction: column;
 }
 
 .textOverflow {
@@ -437,6 +442,35 @@ span.condition::before {
   bottom: 10px;
   right: -20px;
   overflow: visible;
+}
+
+.styledScrollBar {
+  overflow-y: overlay;
+  transition: var(--transition);
+}
+.styledScrollBar.overflowingY {
+  padding-right: 15px;
+}
+.styledScrollBar::-webkit-scrollbar {
+  position: relative;
+  width: 10px !important;
+  background: black !important;
+  border-radius: var(--borderRadius);
+}
+.styledScrollBar::-webkit-scrollbar-thumb {
+  background: var(--pink);
+  -webkit-transition: var(--transition);
+  transition: var(--transition);
+  border-radius: var(--borderRadius);
+}
+.styledScrollBar::-webkit-scrollbar-thumb:hover {
+  background: var(--blue);
+}
+.styledScrollBar::-webkit-scrollbar {
+  position: relative;
+  width: 10px !important;
+  border-radius: var(--borderRadius);
+  background: var(--violet) !important;
 }
 
 /* Mobile Responsiveness */
@@ -485,6 +519,9 @@ span.condition::before {
   .bottomBar {
     position: static;
   }
+  .fiveDayForecast {
+    padding: 20px 0 75px;
+  }
 }
 @media screen and (max-width: 1300px) {
   .dashboard {
@@ -523,23 +560,22 @@ span.condition::before {
     text-align: center;
   }
   .spanContainer {
-    display: flex;
-    flex-direction: column;
+    width: 80%;
     height: 100%;
-    justify-content: center;
+    display: flex;
+    margin: 0 auto;
     padding: 3em 0em;
+    flex-direction: column;
+    justify-content: center;
   }
   .stat {
     display: flex;
-    margin: 1em auto;
-    width: 90%;
+    margin: 0em auto;
     align-items: center;
     justify-content: space-between;
   }
-}
-@media (max-height: 992px) {
   .card {
-    height: 280px;
+    height: 330px;
   }
 }
 @media screen and (max-width: 768px) {

@@ -17,6 +17,7 @@ const searchInput = $(`#search`);
 const coordinates = $(`.coords`);
 const cardDayText = $(`.dayText`);
 const population = $(`.population`);
+const searchForm = $(`.searchForm`);
 const cityNameText = $(`.cityName`);
 const currentTime = $(`.currentTime`);
 const citiesList = $(`.locationList`);
@@ -54,6 +55,14 @@ const capWords = (str) => {
     return str.replace(/\b\w/g, (match) => {
         return match.toUpperCase();
     });
+}
+
+const checkOverflow = (element) => {
+    if ($(element)[0].scrollWidth > $(element).innerWidth()) $(element).addClass(`overflowingX`);
+    else if ($(element).hasClass(`overflowingX`)) $(element).removeClass(`overflowingX`);
+
+    if ($(element)[0].scrollHeight > $(element).innerHeight()) $(element).addClass(`overflowingY`);
+    else if ($(element).hasClass(`overflowingY`)) $(element).removeClass(`overflowingY`);
 }
 
 const momentTimezoneFormats = {
@@ -95,6 +104,7 @@ const createButtons = (uniqueLocations) => {
         `);
         buttonContainer.append(locationButton);
     })
+    checkOverflow(buttonContainer);
 }
 
 const convertLatLonToDMSDirectionFromCoordinates = (coordinate, latOrLon) => {
@@ -420,7 +430,6 @@ const getCurrentWeatherForLocation = async (location, searched, openStreetMapsDa
             let openWeatherLocationNameData = await openWeatherLocationNameResponse.json();
             if (isValid(openWeatherLocationNameData)) {
                 setTimeout(() => {
-                    // toastr.clear();
                     toastr.success(`GeoData${typeof location == `string` ? ` for ${capWords(location)}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Got GeoData`, toastrOptions);
                 }, 500);
                 return setCurrentWeatherDataFromLocation(openWeatherLocationNameData, location, searched, openStreetMapsData);
@@ -459,6 +468,7 @@ buttonContainer.on(`click`, `.removeCityButton`, (event) => {
     locations.splice(cityToRemoveIndex, 1);
     localStorage.setItem(locationsDatabaseName, JSON.stringify(locations));
     if (locations.length === 0) locationsData.hide();
+    checkOverflow(buttonContainer);
 })
 
 searchButton.on(`click`, (searchButtonClickEvent) => {
