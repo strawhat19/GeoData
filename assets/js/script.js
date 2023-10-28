@@ -353,13 +353,15 @@ const setCurrentWeatherDataFromLocation = async (currentWeatherData, location, s
         });
 
         if (populations.length > 0) {
-            populations = populations.sort((a, b) => b - a);
-            population.html(populations[0].toLocaleString());
+            // let populationsSorted = populations.sort((a, b) => b - a);
+            let totalPopulation = populations.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+            population.html(totalPopulation.toLocaleString());
         } else {
             population.html(`---`);
         }
 
-        cityNameText.html(locationToAdd + `, ` + countryCodeOfWeather);
+        let country = openStreetMapsData[0].address.country || countryCodeOfWeather;
+        cityNameText.html(locationToAdd + `, ` + country);
         address.html(openStreetMapsData[0].display_name.split(`,`).slice(0, 2).join(`,`));
         region.html(openStreetMapsData[0].display_name.split(`,`).slice(2, openStreetMapsData[0].display_name.split(`,`).length).join(`,`) || browserTimezoneContinent);
 
