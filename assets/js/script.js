@@ -1,6 +1,6 @@
 // GeoData API
-let locations = [];
 let cityName = ``;
+let locations = [];
 let dynamicTimer = null;
 let uniqueLocations = [];
 
@@ -217,7 +217,6 @@ const generateMapFromCoordinates = (coordinates) => {
 }
 
 const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
-
     let timezone = oneCallFiveDayForecastData.timezone;
     setDynamicTimer(timezone);
     
@@ -324,11 +323,13 @@ const setCurrentWeatherDataFromLocation = async (currentWeatherData, location, s
         let countryCodeOfWeather = currentWeatherData.sys.country;
         let locationHumidity = `${currentWeatherData.main.humidity} %`;
         let coordinatesOfWeatherLocation = { latitude, longitude, location };
+
         let tempInFahrenheit = convertFromKelvinToFahrenheit(tempInKelvin).toFixed(1);
         let generatedMapData = generateMapFromCoordinates(coordinatesOfWeatherLocation);
         let locationWindSpeed = `${convertFromMSToMPH(currentWeatherData.wind.speed)} mph`;
         let locationQuery = typeof location == `string` ? location : currentWeatherData.name;
         let timezoneAndLocationData = await getLocationDateTimeDataFromCoordinates(coordinatesOfWeatherLocation);
+
         openStreetMapsData = isValid(openStreetMapsData) ? openStreetMapsData : await getLocationDataFromOpenStreetMapsNominatimAPI(locationQuery, searched, false);
         let locationToAdd = searched == true && isValid(searchInput.val()) ? searchInput.val() : typeof location == `string` ? location : openStreetMapsData[0]?.name && isValid(openStreetMapsData[0]?.name) ? openStreetMapsData[0]?.name : currentWeatherData.name;
 
@@ -345,6 +346,29 @@ const setCurrentWeatherDataFromLocation = async (currentWeatherData, location, s
             searchInput.val(``);
         }
 
+        let openStreetMapsCountry = openStreetMapsData[0].address.country;
+        let country = openStreetMapsCountry || countryCodeOfWeather;
+
+        let openStreetMapsCityCountry = openStreetMapsData[0].display_name.split(`,`).slice(0, 2).join(`,`);
+        let openStreetMapsRegion = openStreetMapsData[0].display_name.split(`,`).slice(2, openStreetMapsData[0].display_name.split(`,`).length).join(`,`);
+
+        let timezoneAPIZoneForLocation = timezoneAndLocationData.zoneName;
+        let timezoneAPIContinentForLocation = timezoneAPIZoneForLocation.split(`/`)[0].replace(/_/g, ` `);
+
+        setDynamicTimer(timezoneAPIZoneForLocation);
+
+        cityNameText.html(locationToAdd + `, ` + country);
+
+        address.html(openStreetMapsCityCountry);
+        region.html(openStreetMapsRegion || timezoneAPIContinentForLocation || browserTimezoneContinent);
+
+        coordinates.html(Math.floor(latitude) + `, ` + Math.floor(longitude));
+        coordsDirectional.html(convertLatLonToDMSDirectionFromCoordinates(latitude, `lat`) + `, ` + convertLatLonToDMSDirectionFromCoordinates(longitude, `lon`));
+
+        temperature.html(tempInFahrenheit + `° F`);
+        humidity.html(locationHumidity);
+        wind.html(locationWindSpeed);
+
         let populations = [];
         openStreetMapsData.forEach(dataPoint => {
             if (dataPoint?.extratags?.population) {
@@ -359,17 +383,6 @@ const setCurrentWeatherDataFromLocation = async (currentWeatherData, location, s
         } else {
             population.html(`---`);
         }
-
-        let country = openStreetMapsData[0].address.country || countryCodeOfWeather;
-        cityNameText.html(locationToAdd + `, ` + country);
-        address.html(openStreetMapsData[0].display_name.split(`,`).slice(0, 2).join(`,`));
-        region.html(openStreetMapsData[0].display_name.split(`,`).slice(2, openStreetMapsData[0].display_name.split(`,`).length).join(`,`) || browserTimezoneContinent);
-
-        temperature.html(tempInFahrenheit + `° F`);
-        humidity.html(locationHumidity);
-        wind.html(locationWindSpeed);
-        coordinates.html(Math.floor(latitude) + `, ` + Math.floor(longitude));
-        coordsDirectional.html(convertLatLonToDMSDirectionFromCoordinates(latitude, `lat`) + `, ` + convertLatLonToDMSDirectionFromCoordinates(longitude, `lon`));
 
         let geoLocationData = {
             location,
@@ -423,8 +436,12 @@ const getLocationDataFromOpenStreetMapsNominatimAPI = async (location, searched,
 }
 
 const getCurrentWeatherForLocation = async (location, searched, openStreetMapsData = null) => {
+    const latt = convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`);
+    const long = convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`);
+    const coordinatePoint = `${latt}, ${long};`
+    const location_name = typeof location == `string` ? capWords(location) : coordinatePoint;
     try {
-        if (typeof location == `string`) toastr.info(`Getting GeoData${typeof location == `string` ? ` for ${capWords(location)}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Loading...`, toastrOptions);
+        toastr.info(`Getting GeoData for ${location_name}`, `Loading...`, toastrOptions);
         let locationQuery = typeof location == `string` ? `?q=${location}` : `?lat=${location.latitude}&lon=${location.longitude}`;
         let openWeatherForLocationURL = `${openWeatherAPIURL}/weather${locationQuery}&appid=${openWeatherAPIKey}`;
         let openWeatherLocationNameResponse = await fetch(openWeatherForLocationURL);
@@ -432,19 +449,22 @@ const getCurrentWeatherForLocation = async (location, searched, openStreetMapsDa
             let openWeatherLocationNameData = await openWeatherLocationNameResponse.json();
             if (isValid(openWeatherLocationNameData)) {
                 setTimeout(() => {
-                    toastr.success(`GeoData${typeof location == `string` ? ` for ${capWords(location)}` : ` for ${convertLatLonToDMSDirectionFromCoordinates(location.latitude, `lat`)}, ${convertLatLonToDMSDirectionFromCoordinates(location.longitude, `lon`)}`}`, `Got GeoData`, toastrOptions);
+                    toastr.success(`GeoData for ${location_name}`, `Got GeoData`, toastrOptions);
                 }, 500);
                 return setCurrentWeatherDataFromLocation(openWeatherLocationNameData, location, searched, openStreetMapsData);
             }
         } else {
-            toastr.warning(`Checking if location is valid...`, `Validating...`, toastrOptions);
+            toastr.warning(`Checking if ${location_name} is valid...`, `Validating...`, toastrOptions);
             setTimeout(() => {
                 toastr.info(`Doing an Extensive Search...`, `Searching...`, { ...toastrOptions, timeOut: 3000 });
             }, 250);
             return getLocationDataFromOpenStreetMapsNominatimAPI(location, searched);
         }
     } catch (error) {
-        console.log(`Error Fetching Weather Data for City Name`, error.message, error);
+        setTimeout(() => {
+            toastr.error(`Couldn't Get GeoData for ${location_name}`, `GeoData Down`, toastrOptions);
+        }, 500);
+        console.log(`Error Getting GeoData for ${location_name}`, error.message, error);
         return error.message;
     }
 }
