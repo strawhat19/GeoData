@@ -69,11 +69,13 @@ const momentTimezoneFormats = {
     smallDateTime: `ddd, M/D, h:mm a`,
     extraSmallDateTime: `M/D, h:mm:ss a`,
     mediumDateTime: `ddd, MMM Do, h:mm a`,
-    fullDateTime: `dddd, MMMM Do, h:mm:ss a`,
+    fullDateTime: `dddd, MMM Do, h:mm:ss a`,
 }
 
 const setDynamicTimer = (timezone) => {
-    copyrightYear.html(moment().tz(timezone).format(`YYYY`));
+    let currentTimeMoment = moment().tz(timezone);
+    let forecastCards = $(`.fiveDayForecast .card`);
+    copyrightYear.html(currentTimeMoment.format(`YYYY`));
     if (dynamicTimer != null) clearInterval(dynamicTimer);
     dynamicTimer = setInterval(async () => {
         let format;
@@ -81,25 +83,32 @@ const setDynamicTimer = (timezone) => {
             if (window.innerWidth < 500) {
                 if (window.innerWidth < 455) {
                     format = momentTimezoneFormats.extraSmallDateTime;
-                } else {
-                    format = momentTimezoneFormats.smallDateTime;
-                }
-            } else {
-                format = momentTimezoneFormats.mediumDateTime;
-            }
-        } else {
-            format = momentTimezoneFormats.fullDateTime;
-        }
-        currentTime.html(moment().tz(timezone).format(format));
+                } else format = momentTimezoneFormats.smallDateTime;
+            } else format = momentTimezoneFormats.mediumDateTime;
+        } else format = momentTimezoneFormats.fullDateTime;
+        currentTime.html(currentTimeMoment.format(format));
     }, 1000);
+    forecastCards.each((cardIdx, cardElem) => {
+        let futureDate = currentTimeMoment.clone().add(cardIdx + 1, `days`);
+        let formattedDate = futureDate.format(`MMM Do`);
+        let formattedDay = futureDate.format(`dddd`);
+        let cardDate = $(cardElem).find(`.date`);
+        let cardDay = $(cardElem).find(`.dayText`);
+        if (cardDate) $(cardDate).html(formattedDate);
+        if (cardDay) $(cardDay).html(formattedDay);
+    });
 }
 
 const createButtons = (uniqueLocations) => {
     uniqueLocations.reverse().forEach((city,index) => {
         let locationButton = $(`
             <div class="locationElement">
-                <button class="locationButton" id="${index}" data-location="${city}">${city}</button>
-                <button class="removeCityButton" id="${index}">X</button>
+                <button class="locationButton" id="${index}" data-location="${city}">
+                    ${city}
+                </button>
+                <button class="removeCityButton" id="${index}">
+                    X
+                </button>
             </div>
         `);
         buttonContainer.append(locationButton);
@@ -189,7 +198,6 @@ const isValid = (item) => {
 }
 
 const generateMapFromCoordinates = (coordinates) => {
-
     let { latitude, longitude } = coordinates;
     let zoomLevel = googleMapZoomLevels.region;
     let generatedMap = document.querySelector(`.generatedMap`);
@@ -220,8 +228,8 @@ const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
     let timezone = oneCallFiveDayForecastData.timezone;
     setDynamicTimer(timezone);
     
-    let firstDay = oneCallFiveDayForecastData.daily[0];
     let uvi = oneCallFiveDayForecastData.current.uvi;
+    let firstDay = oneCallFiveDayForecastData.daily[0];
     let currentDaysCondition = firstDay.weather[0].main;
     
     uvIndex.html(uvi);
@@ -246,17 +254,30 @@ const setOneCallFiveDayForecastData = (oneCallFiveDayForecastData) => {
 
         let foreCastCards = $(`
             <div class="card">
-                <div class="dateIcon"><h4 class="date">${fullDates}</h4><img class="icon" src="${iconLink}"></div>
-                <h3 class="dayText">${day}</h3>
+                <div class="dateIcon">
+                    <h4 class="date">
+                        ${fullDates}
+                    </h4>
+                    <img alt="Weather-Icon" class="icon" src="${iconLink}" />
+                </div>
+                <h3 class="dayText">
+                    ${day}
+                </h3>
                 <div class="spanContainer">
                     <div class="stat">Temperature: 
-                        <span class="cardTemperature">${Math.floor(daysMaxTemp)}° F</span>
+                        <span class="cardTemperature">
+                            ${Math.floor(daysMaxTemp)}° F
+                        </span>
                     </div>
                     <div class="stat">Wind: 
-                        <span class="cardWind">${daysWindSpeed}</span>
+                        <span class="cardWind">
+                            ${daysWindSpeed}
+                        </span>
                     </div>
                     <div class="stat">Humidity: 
-                        <span class="cardHumidity">${daysHumidity}</span>
+                        <span class="cardHumidity">
+                            ${daysHumidity}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -285,11 +306,15 @@ const getOneCallFiveDayForecastDataForCoordinates = async (coordinates, geoLocat
                 return setOneCallFiveDayForecastData(openWeatherOneCallForLatLonData);
             }
         } else {
-            console.log(`Error Fetching Weather Data for Coordinates`);
+            toastr.clear();
+            setTimeout(() =>  toastr.error(`Couldn't Get 5-Day Forecast`, `5-Day Forecast Error`, toastrOptions), 500);
+            console.log(`Error Fetching 5-Day Forecast`, geoLocationData);
             return;
         }
     } catch (error) {
-        console.log(`Error Fetching Weather Data for Coordinates`, error.message, error);
+        toastr.clear();
+        setTimeout(() => toastr.error(`Couldn't Get 5-Day Forecast`, `5-Day Forecast Error`, toastrOptions), 500);
+        console.log(`Error Fetching 5-Day Forecast`, error.message, error);
         return error.message;
     }
 }
@@ -304,9 +329,11 @@ const getLocationDateTimeDataFromCoordinates = async (coordinates) => {
                 return timezoneData;
             }
         } else {
+            toastr.error(`Couldn't Get Timezone Data`, `Timezone Not Found`, toastrOptions);
             console.log(`Error Fetching Timezone Data`, timezoneResponse);
         }
     } catch (error) {
+        toastr.error(`Couldn't Get Timezone Data`, `Timezone Not Found`, toastrOptions);
         console.log(`Error Fetching Timezone Data`, error);
     }
 }
@@ -316,7 +343,6 @@ const setCurrentWeatherDataFromLocation = async (currentWeatherData, location, s
         alert(`City Not Found.`);
         return;
     } else {
-
         let latitude = currentWeatherData.coord.lat;
         let longitude = currentWeatherData.coord.lon;
         let tempInKelvin = currentWeatherData.main.temp;
@@ -365,9 +391,19 @@ const setCurrentWeatherDataFromLocation = async (currentWeatherData, location, s
         coordinates.html(Math.floor(latitude) + `, ` + Math.floor(longitude));
         coordsDirectional.html(convertLatLonToDMSDirectionFromCoordinates(latitude, `lat`) + `, ` + convertLatLonToDMSDirectionFromCoordinates(longitude, `lon`));
 
-        temperature.html(tempInFahrenheit + `° F`);
-        humidity.html(locationHumidity);
         wind.html(locationWindSpeed);
+        humidity.html(locationHumidity);
+        temperature.html(tempInFahrenheit + `° F`);
+
+        let forecastCards = $(`.fiveDayForecast .card`);
+        forecastCards.each((cardIdx, cardElem) => {
+            let cardWind = $(cardElem).find(`.cardWind`);
+            let cardHumidity = $(cardElem).find(`.cardHumidity`);
+            let cardTemperature = $(cardElem).find(`.cardTemperature`);
+            if (cardWind) $(cardWind).html(locationWindSpeed);
+            if (cardHumidity) $(cardHumidity).html(locationHumidity);
+            if (cardTemperature) $(cardTemperature).html(tempInFahrenheit + `° F`);
+        })
 
         let populations = [];
         openStreetMapsData.forEach(dataPoint => {
@@ -426,6 +462,7 @@ const getLocationDataFromOpenStreetMapsNominatimAPI = async (location, searched,
                 return;
             }
         } else {
+            toastr.error(`Couldn't Get Location for ${locationQuery}`, `Location Not Found`, toastrOptions);
             console.log(`Error Getting Location`, openStreetMapsNominatimLocationResponse);
             return;
         }

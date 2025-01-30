@@ -164,6 +164,7 @@ button:hover {
 
 .locationButton {
   width: 85%;
+  color: var(--violet);
   background: var(--pink);
   border-color: var(--pink);
   text-transform: capitalize;
